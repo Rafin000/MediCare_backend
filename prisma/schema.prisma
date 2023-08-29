@@ -1,0 +1,251 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  user
+  doctor
+}
+
+model users {
+  id           String        @id @unique @default(uuid())
+  firstName    String
+  lastName     String
+  userName     String
+  email        String        @unique
+  password     String
+  phone        String?
+  user_type    UserType
+  user_socials user_social[]
+  user_roles   user_role[]
+  dob          String?
+}
+
+model socials {
+  id              String            @id @unique @default(uuid())
+  name            String
+  description     String?
+  user_socials    user_social[]
+  hospital_social hospital_social[]
+}
+
+model user_social {
+  user     users   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  social   socials @relation(fields: [socialId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId   String
+  socialId String
+
+  @@id([userId, socialId])
+}
+
+model hospital_social {
+  hospital   hospitals @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospitalId String
+  social     socials   @relation(fields: [socialId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  socialId   String
+
+  @@id([hospitalId, socialId])
+}
+
+model roles {
+  id          String      @id @unique @default(uuid())
+  name        String
+  description String?
+  user_roles  user_role[]
+}
+
+model user_role {
+  user   users  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role   roles  @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+  roleId String
+
+  @@id([userId, roleId])
+}
+
+model hospitals {
+  id                   String                @id @unique @default(uuid())
+  name                 String
+  type                 String
+  phone                String?
+  email                String                @unique
+  fax                  String?
+  clinic_hour          String?
+  lab_hour             String?
+  description          String?
+  registration_id      String
+  hospital_social      hospital_social[]
+  hospital_doctors     hospital_doctor[]
+  hospital_treatments  hospital_treatment[]
+  hospital_departments hospital_department[]
+  hospital_locations   hospital_location[]
+}
+
+model hospital_doctor {
+  hospital   hospitals @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospitalId String
+  doctor     doctors   @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctorId   String
+
+  @@id([hospitalId, doctorId])
+}
+
+model doctors {
+  id                     String                  @id @unique @default(uuid())
+  phone_number           String?
+  biography              String?
+  chamber_location       String?
+  is_active              Boolean
+  work_experience        String?
+  registration_id        String                  @unique
+  hospital_doctors       hospital_doctor[]
+  doctor_specializations doctor_specialization[]
+  doctor_awards          doctor_award[]
+  doctor_degrees         doctor_degree[]
+  doctor_locations       doctor_location[]
+}
+
+model blogs {
+  id              String          @id @unique @default(uuid())
+  title           String
+  Description     String?
+  blog_categories blog_category[]
+}
+
+model blog_category {
+  blog       blogs      @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  blogId     String
+  category   categories @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId String
+
+  @@id([blogId, categoryId])
+}
+
+model categories {
+  id              String          @id @unique @default(uuid())
+  name            String
+  description     String?
+  blog_categories blog_category[]
+}
+
+model treatments {
+  id                  String               @id @unique @default(uuid())
+  type                String
+  description         String?
+  hospital_treatments hospital_treatment[]
+}
+
+model hospital_treatment {
+  treatment   treatments @relation(fields: [treatmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  treatmentId String
+  hospital    hospitals  @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospitalId  String
+
+  @@id([hospitalId, treatmentId])
+}
+
+model departments {
+  id                   String                @id @unique @default(uuid())
+  name                 String
+  description          String?
+  hospital_departments hospital_department[]
+}
+
+model hospital_department {
+  department   departments @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  departmentId String
+  hospital     hospitals   @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospitalId   String
+
+  @@id([hospitalId, departmentId])
+}
+
+model locations {
+  id                 String              @id @unique @default(uuid())
+  longitude          String
+  latitude           String
+  street             String?
+  address            String?
+  country            String?
+  division           String?
+  district           String?
+  thanan             String?
+  hospital_locations hospital_location[]
+  doctor_locations   doctor_location[]
+}
+
+model doctor_location {
+  visiting_hour String
+  visiting_fee  String
+  doctor        doctors   @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctorId      String
+  location      locations @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locationId    String
+
+  @@id([doctorId, locationId])
+}
+
+model hospital_location {
+  location   locations @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locationId String
+  hospital   hospitals @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospitalId String
+
+  @@id([hospitalId, locationId])
+}
+
+model specializations {
+  id                     String                  @id @unique @default(uuid())
+  name                   String
+  description            String?
+  doctor_specializations doctor_specialization[]
+}
+
+model doctor_specialization {
+  specialization   specializations @relation(fields: [specializationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  specializationId String
+  doctor           doctors         @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctorId         String
+
+  @@id([doctorId, specializationId])
+}
+
+model awards {
+  id            String         @id @unique @default(uuid())
+  name          String
+  description   String?
+  doctor_awards doctor_award[]
+}
+
+model doctor_award {
+  award    awards  @relation(fields: [awardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  awardId  String
+  doctor   doctors @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctorId String
+
+  @@id([doctorId, awardId])
+}
+
+model degrees {
+  id             String          @id @unique @default(uuid())
+  name           String
+  description    String?
+  doctor_degrees doctor_degree[]
+}
+
+model doctor_degree {
+  degree   degrees @relation(fields: [degreeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  degreeId String
+  doctor   doctors @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctorId String
+
+  @@id([doctorId, degreeId])
+}
