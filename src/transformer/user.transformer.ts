@@ -1,4 +1,4 @@
-import { IUser } from "../models/user.model";
+import { IUser } from "../types/user.type";
 import { Transformer } from "./transformer";
 
 export class userTransformer implements Transformer {

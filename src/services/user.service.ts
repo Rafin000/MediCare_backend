@@ -1,6 +1,6 @@
 import { db } from "../db.server";
 import { itemDeletedAndAdded } from "../helpers/utility";
-import { IUser } from "../models/user.model";
+import { IUser } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
 import { userTransformer } from "../transformer";
 
@@ -15,20 +15,8 @@ export default class UserService {
           password: req.password,
           userName: req.userName,
           dob: req.dob,
-          fathers_name: req.fathers_name,
-          mothers_name: req.mothers_name,
-          marital_status: req.marital_status,
-          blood_group: req.blood_group,
-          contact_number: req.contact_number,
-          present_address: req.present_address,
-          emergency_contact_number: req.emergency_contact_number,
-          nid: req.nid,
-          permanent_address: req.permanent_address,
-          tin_number: req.tin_number,
-          tshirt: req.tshirt,
-          gender: req.gender,
-          religion: req.religion,
-          profile_picture: req.profile_picture,
+          phone: req.phone,
+          // user_type: req.userType
         },
       });
       return userTransformer.getTransformer().transform(newUser);

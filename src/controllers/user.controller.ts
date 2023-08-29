@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import userService from "../services/user.service";
-import { IUser } from "../models/user.model";
+import { IUser } from "../types/user.type";
 import catchAsync from "../utils/catchAsync";
 import apiResponse from "../services/apiResponse.service";
 import { IUserAddOrRemoveRolesPayload } from "../types/user.type";
