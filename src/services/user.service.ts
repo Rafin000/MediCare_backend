@@ -1,22 +1,22 @@
 import { db } from "../db.server";
 import { itemDeletedAndAdded } from "../helpers/utility";
-import { IUser } from "../types/user.type";
+import { IUser, IUserCreateDto } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
 import { userTransformer } from "../transformer";
 
 export default class UserService {
-  public async createUser(req: IUser): Promise<IUser> {
+  public async createUser(data: IUserCreateDto): Promise<IUser> {
     try {
       const newUser = await db.users.create({
         data: {
-          firstName: req.firstName,
-          lastName: req.lastName,
-          email: req.email,
-          password: req.password,
-          userName: req.userName,
-          dob: req.dob,
-          phone: req.phone,
-          // user_type: req.userType
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          password: data.password,
+          userName: data.userName,
+          dob: data.dob,
+          phone: data.phone,
+          user_type: data.userType
         },
       });
       return userTransformer.getTransformer().transform(newUser);
@@ -64,7 +64,7 @@ export default class UserService {
 
   public async updateUser(id: string, payload: Partial<IUser>): Promise<IUser> {
     try {
-      const { email, firstName, lastName } = payload;
+      const { email, firstName, lastName, phone } = payload;
       const user = await db.users.update({
         where: {
           id: id,
@@ -73,9 +73,10 @@ export default class UserService {
           ...(email ? { email } : {}),
           ...(firstName ? { firstName } : {}),
           ...(lastName ? { lastName } : {}),
+          ...(phone ? { phone } : {}),
         },
       });
-      return user;
+      return userTransformer.getTransformer().transform(user);
     } catch (error) {
       throw error;
     }
@@ -88,7 +89,7 @@ export default class UserService {
           id: id,
         },
       });
-      return user;
+      return userTransformer.getTransformer().transform(user);
     } catch (error) {
       throw error;
     }
@@ -126,156 +127,3 @@ export default class UserService {
   }
 }
 
-
-
-// import { db } from "../db.server";
-// import { itemDeletedAndAdded } from "../helpers/utility";
-// import { IUser } from "../models/user.model";
-// import userRoleRepository from "../repository/user-role.repository";
-// import { userTransformer } from "../transformer";
-
-
-
-// const createUser = async (req: IUser): Promise<IUser> => {
-
-//   try {
-//     const newUser = await db.users.create({
-//       data: {
-//         firstName: req.firstName,
-//         lastName: req.lastName,
-//         email: req.email,
-//         password: req.password,
-//         userName: req.userName,
-//         dob: req.dob,
-//         fathersName: req.fathersName,
-//         mothersName: req.mothersName,
-//         maritalStatus: req.maritalStatus,
-//         bloodGroup: req.bloodGroup,
-//         contactNumber: req.contactNumber,
-//         presentAddress: req.presentAddress,
-//         emergencyContactNumber: req.emergencyContactNumber,
-//         nid: req.nid,
-//         permanentAddress: req.permanentAddress,
-//         tinNumber: req.tinNumber,
-//         tshirt: req.tshirt,
-//         gender: req.gender,
-//         religion: req.religion,
-//         profilepicture: req.profilepicture,
-//       },
-//     });
-//     return Promise.resolve(userTransformer.getTransformer().transform(newUser))
-//   } catch (error) {
-//     return Promise.reject(error)
-//   }
-// }
-
-
-// const getAllUsers = async (): Promise<IUser[]> => {
-
-//   try {
-//     const allRawUsers = await db.users.findMany();
-//     const allUsers = allRawUsers.map(user => userTransformer.getTransformer().transform(user))
-//     return Promise.resolve(allUsers)
-//   } catch (error) {
-//     return Promise.reject(error)
-//   }
-// }
-
-// const getUser = async (id: string): Promise<IUser> => {
-//   try {
-//     const user = await db.users.findUnique({
-//       where: {
-//         userId: id,
-
-//       },
-//       include: {
-//         userRole: {
-//           include: {
-//             role: {
-//               select: {
-//                 roleId: true,
-//                 roleName: true
-//               }
-//             }
-//           }
-//         }
-//       }
-//     })
-//     const transformedUser = userTransformer.getTransformer().transform(user)
-//     return Promise.resolve(transformedUser)
-//   }
-//   catch (error) {
-//     return Promise.reject(error)
-//   }
-// }
-
-// const updateUser = async (id: string, payload: Partial<IUser>): Promise<IUser> => {
-//   try {
-//     const { email, firstName, lastName } = payload;
-//     const user = await db.users.update({
-//       where: {
-//         userId: id
-//       },
-//       data: {
-//         ...(email ? { email } : {}),
-//         ...(firstName ? { firstName } : {}),
-//         ...(lastName ? { lastName } : {}),
-//       },
-//     })
-//     return Promise.resolve(user)
-//   } catch (error) {
-//     return Promise.reject(error)
-//   }
-// }
-
-
-// const deleteUser = async (id: string): Promise<IUser> => {
-//   try {
-//     const user = await db.users.delete({
-//       where: {
-//         userId: id
-//       },
-//     })
-//     return Promise.resolve(user)
-//   } catch (error) {
-//     return Promise.reject(error)
-//   }
-// }
-// const getAllUserRoles = async (userId: string) => {
-//   try {
-//     const userRoles = await db.user_role.findMany({
-//       where: {
-//         userId: userId,
-//       },
-//       select: {
-//         role: true,
-//       },
-//     });
-//     return userRoles
-//   } catch (error) {
-//     return null
-//   }
-// }
-
-// const addOrRemoveUserRoles = async ({ roleIds, userId }) => {
-//   try {
-//     const UserALLRoles = await userRoleRepository.findAllRolesByUserId(userId)
-//     const { itemsToBeAdded, itemsToBeDeleted } = itemDeletedAndAdded(UserALLRoles, roleIds)
-//     await userRoleRepository.bulkAdd(itemsToBeAdded, userId)
-//     await userRoleRepository.bulkDelete(itemsToBeDeleted, userId)
-
-//   } catch (error) {
-//     return error
-//   }
-// }
-// const userService = {
-//   createUser,
-//   getAllUsers,
-//   getUser,
-//   updateUser,
-//   deleteUser,
-//   addOrRemoveUserRoles,
-//   getAllUserRoles
-// }
-
-// export default userService

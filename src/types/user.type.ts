@@ -3,9 +3,9 @@ export interface IUserAddOrRemoveRolesPayload {
   roleIds: string[]
 }
 
-export enum IUserType {
-  user,
-  doctor
+enum IUserType {
+  USER = "user",
+  DOCTOR = "doctor"
 }
 
 export interface IUser {
@@ -16,8 +16,19 @@ export interface IUser {
   email: string
   password: string
   phone: string | null
-  userType: IUserType
+  userType: IUserType | undefined
   dob: string | null
   roles?: IRole[]
   // socials?: ISocial[]
 }
+
+export interface IUserCreateDto{
+  firstName: string
+  lastName: string
+  userName: string
+  email: string
+  password: string
+  phone: string | null
+  userType: IUserType | undefined
+  dob: string | null
+} 
