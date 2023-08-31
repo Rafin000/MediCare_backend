@@ -1,5 +1,5 @@
 import { IRole } from "../types/role.type"
-export interface IUserAddOrRemoveRolesPayload {
+export type IUserAddOrRemoveRolesPayload = {
   roleIds: string[]
 }
 
@@ -8,7 +8,7 @@ enum IUserType {
   DOCTOR = "doctor"
 }
 
-export interface IUser {
+export type IUser = {
   id: string
   firstName: string
   lastName: string
@@ -22,7 +22,7 @@ export interface IUser {
   // socials?: ISocial[]
 }
 
-export interface IUserCreateDto{
+export type IUserCreateDto = {
   firstName: string
   lastName: string
   userName: string

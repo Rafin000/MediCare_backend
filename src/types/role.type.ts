@@ -1,4 +1,4 @@
-export interface IRole {
+export type IRole = {
   name: string,
   description: string | null
   id: string
