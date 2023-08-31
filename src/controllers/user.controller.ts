@@ -1,4 +1,5 @@
 import { Router, Response } from "express";
+import {Request} from '../types'
 import userService from "../services/user.service";
 import { IUser } from "../types/user.type";
 import catchAsync from "../utils/catchAsync";
@@ -9,7 +10,7 @@ import UserService from "../services/user.service";
 
 export default class UserController {
   static createUser = catchAsync(
-    async (req, res: Response) => {
+    async (req:Request, res: Response) => {
       const payload = req.body as IUser
       const userService = new UserService();
       const newUser: IUser = await userService.createUser(payload)
@@ -18,7 +19,7 @@ export default class UserController {
   )
 
   static getAllUsers = catchAsync(
-    async (req, res: Response) => {
+    async (req:Request, res: Response) => {
       const userService = new UserService();
       const users: IUser[] = await userService.getAllUsers()
       apiResponse.sendSuccess({ res: res, data: users })
@@ -26,7 +27,7 @@ export default class UserController {
   )
 
   static getUser = catchAsync(
-    async (req, res: Response) => {
+    async (req:Request, res: Response) => {
       const { userId } = req.params
       const userService = new UserService();
       const user: IUser = await userService.getUser(userId)
@@ -35,7 +36,7 @@ export default class UserController {
   )
 
   static updateUser = catchAsync(
-    async (req, res: Response) => {
+    async (req:Request, res: Response) => {
       const { userId } = req.params;
       const payload = req.body as Partial<IUser>
       const userService = new UserService();
@@ -45,7 +46,7 @@ export default class UserController {
   )
 
   static deleteUser = catchAsync(
-    async (req, res: Response) => {
+    async (req:Request, res: Response) => {
       const { userId } = req.params
       const userService = new UserService();
       const deletedUser: IUser = await userService.deleteUser(userId)
@@ -54,7 +55,7 @@ export default class UserController {
   )
 
   static addOrRemoveUserRoles = catchAsync(
-    async (req, res: Response) => {
+    async (req:Request, res: Response) => {
       const { userId } = req.params
       const requestDto = req.body as IUserAddOrRemoveRolesPayload
       const userService = new UserService();
@@ -64,7 +65,7 @@ export default class UserController {
   )
 
   static getUserAllRoles = catchAsync(
-    async (req, res: Response) => {
+    async (req:Request, res: Response) => {
       const { userId } = req.params
       const currentUser = req.user
       const userService = new UserService();

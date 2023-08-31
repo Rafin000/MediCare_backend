@@ -1,2 +1,10 @@
-export * from './auth.type'
+import { Request as ExpressRequest } from 'express'
+import { IUser } from '../types'
+
+export * from './role.type'
 export * from './user.type'
+
+export interface Request extends ExpressRequest{
+  user: IUser
+
+}
