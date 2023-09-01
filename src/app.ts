@@ -1,5 +1,5 @@
-import express from "express"
-import Router from './routes'
+import express, { Router } from "express";
+import router from './routes'
 import cors from "cors";
 import * as http from "http";
 import httpStatus from "http-status";
@@ -10,13 +10,13 @@ export default class App {
   private readonly app: express.Application;
   private readonly port;
 
-  constructor(port) {
+  constructor(port: string) {
     this.port = port;
     this.app = express();
     this.app.use(cors());
     this.app.use(express.json({ type: "application/json" }));
     this.app.use(express.urlencoded({ extended: true }));
-    this.addRouter(Router);
+    this.addRouter(router);
     this.app.use((req, res, next) => {
       next(new ApiError(httpStatus.NOT_FOUND, "Not found"));
     });
@@ -32,8 +32,8 @@ export default class App {
     )
   }
 
-  addRouter(router) {
-    this.app.use("/api", router);
+  addRouter(router: Router) {
+    this.app.use("/api/v1", router);
   }
 
 } 

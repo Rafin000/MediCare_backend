@@ -12,6 +12,9 @@ if (!global.__db) {
 
 db = global.__db;
 
-export { db };
+type DbType = typeof db
 
+export type { DbType };
+
+export { db };
 

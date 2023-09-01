@@ -1,5 +1,4 @@
 import httpStatus from "http-status";
-// import logger from "../services/logger.service.js";
 import ApiError from "./ApiError";
 
 export const errorConverter = (err, req, res, next) => {
@@ -14,24 +13,18 @@ export const errorConverter = (err, req, res, next) => {
     next(error);
 };
 
-// eslint-disable-next-line no-unused-vars
 export const errorHandler = (err, req, res, next) => {
     let { statusCode, message } = err;
     if (!err.isOperational) {
         statusCode = httpStatus.INTERNAL_SERVER_ERROR;
         message = httpStatus[httpStatus.INTERNAL_SERVER_ERROR];
     }
-
     res.locals.errorMessage = err.message;
 
     const response = {
         code: statusCode,
         message,
 
-        // ...(config.env === "development" && { stack: err.stack }),
     };
-
-    // console.error(err);
-
     res.status(statusCode).send(response);
 };

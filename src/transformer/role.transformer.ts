@@ -1,8 +1,16 @@
-// import { IRole } from "../types/role.type"
+import { IRole } from "../types/role.type"
+import { Transformer } from "./transformer";
 
-// export const roleTransformer = (role: any): Omit<IRole,'roleId'> => {
-//   return {
-//     roleName: role.roleName,
-//     description: role.description,
-//   }
-// }
+export class roleTransformer implements Transformer {
+  static getTransformer() {
+    return new roleTransformer();
+  }
+
+  transform(role: any): IRole {
+    return {
+      id: role.id,
+      name: role.roleName,
+      description: role.description,
+    }
+  }
+}
