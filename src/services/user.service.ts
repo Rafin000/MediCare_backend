@@ -3,27 +3,60 @@ import { itemDeletedAndAdded } from "../helpers/utility";
 import { IUser, IUserCreateDto } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
 import { userTransformer } from "../transformer";
+import BaseRepository from "../repository/base.repository";
 
-export default class UserService {
-  public async createUser(data: IUserCreateDto): Promise<IUser> {
+export default class UserService extends BaseRepository {
+  public async createUser(data: Partial<IUser>): Promise<IUser> {
     try {
-      const newUser = await db.users.create({
-        data: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          password: data.password,
-          userName: data.userName,
-          dob: data.dob,
-          phone: data.phone,
-          user_type: data.userType
-        },
-      });
-      return userTransformer.getTransformer().transform(newUser);
+      const newUser = await this.create<IUser>("users", {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+        userName: data.userName,
+        dob: data.dob,
+        phone: data.phone,
+        user_type: data.user_type
+      },
+        userTransformer.getTransformer().transform
+      );
+      return newUser;
     } catch (error) {
       throw error;
     }
   }
+
+
+  public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
+    try {
+      const { email, firstName, lastName, phone } = payload;
+      const user = await this.update<IUser>(
+        'users',
+        id,
+        {
+          ...(email ? { email } : {}),
+          ...(firstName ? { firstName } : {}),
+          ...(lastName ? { lastName } : {}),
+          ...(phone ? { phone } : {}),
+        },
+        userTransformer.getTransformer().transform
+      );
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  public async deleteUser(id: string): Promise<IUser> {
+    try {
+      const user = await this.delete('users', id, userTransformer.getTransformer().transform);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
   public async getAllUsers(): Promise<IUser[]> {
     try {
@@ -34,6 +67,19 @@ export default class UserService {
       return allUsers;
     } catch (error) {
       throw error;
+    }
+  }
+
+  public async findUserById(userId: string): Promise<IUser> | null {
+    try {
+      const user = await db.users.findUnique({
+        where: {
+          id: userId
+        },
+      })
+      return userTransformer.getTransformer().transform(user)
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -62,38 +108,8 @@ export default class UserService {
     }
   }
 
-  public async updateUser(id: string, payload: Partial<IUser>): Promise<IUser> {
-    try {
-      const { email, firstName, lastName, phone } = payload;
-      const user = await db.users.update({
-        where: {
-          id: id,
-        },
-        data: {
-          ...(email ? { email } : {}),
-          ...(firstName ? { firstName } : {}),
-          ...(lastName ? { lastName } : {}),
-          ...(phone ? { phone } : {}),
-        },
-      });
-      return userTransformer.getTransformer().transform(user);
-    } catch (error) {
-      throw error;
-    }
-  }
 
-  public async deleteUser(id: string): Promise<IUser> {
-    try {
-      const user = await db.users.delete({
-        where: {
-          id: id,
-        },
-      });
-      return userTransformer.getTransformer().transform(user);
-    } catch (error) {
-      throw error;
-    }
-  }
+
 
   public async getAllUserRoles(userId: string) {
     try {

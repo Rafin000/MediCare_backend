@@ -1,11 +1,12 @@
 import { Router } from "express";
 import userController from "../controllers/user.controller";
+import UserMiddleware from "../middlewares/userMiddleware";
 
 const userRouter = Router();
 
 // get users list
 // -> baseUrl/users
-userRouter.get('/users', userController.getAllUsers)
+userRouter.get('/users', UserMiddleware.checkPayloadUserInformation, userController.getAllUsers)
 
 // get a single user info
 // -> baseUrl/users/:userId

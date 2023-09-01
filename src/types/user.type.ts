@@ -16,7 +16,7 @@ export type IUser = {
   email: string
   password: string
   phone: string | null
-  userType: IUserType | undefined
+  user_type: IUserType | undefined
   dob: string | null
   roles?: IRole[]
   // socials?: ISocial[]

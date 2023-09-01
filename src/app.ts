@@ -33,7 +33,7 @@ export default class App {
   }
 
   addRouter(router: Router) {
-    this.app.use("/api", router);
+    this.app.use("/api/v1", router);
   }
 
 } 

@@ -1,6 +1,6 @@
 import { Router } from "express"
 import userRouter from './users.route'
-import roleRouter from "./role.route"
+import roleRouter from "./roles.route"
 
 const router = Router()
 
