@@ -1,11 +1,9 @@
-import { IUser } from "../types/user.type";
-import { Transformer } from "./transformer";
+import { IUser } from "../../types";
+import { Transformer } from "../transformer";
 
-export class userTransformer implements Transformer {
-  static getTransformer() {
-    return new userTransformer();
-  }
 
+ class UserResource implements Transformer {
+ 
   transform(user: any): IUser {
     return {
       id: user.userId,
@@ -21,3 +19,7 @@ export class userTransformer implements Transformer {
     }
   }
 }
+
+const userResource = new UserResource()
+
+export default userResource

@@ -1,55 +1,30 @@
-// import { PrismaClient, ModelName } from '@prisma/client';
-// class BaseRepository<T> {
-//   protected prisma: PrismaClient;
-//   protected model: ModelName; // Store the model name
-//   constructor(model: ModelName) {
-//     this.prisma = new PrismaClient();
-//     this.model = model;
-//   }
-//   async create(data: Partial<T>): Promise<T> {
-//     return this.prisma[this.model].create({ data });
-//   }
-//   async findById(id: number): Promise<T | null> {
-//     return this.prisma[this.model].findFirst({ where: { id } });
-//   }
-//   async update(id: number, data: Partial<T>): Promise<T | null> {
-//     return this.prisma[this.model].update({ where: { id }, data });
-//   }
-//   async delete(id: number): Promise<T | null> {
-//     return this.prisma[this.model].delete({ where: { id } });
-//   }
-//   async findMany(): Promise<T[]> {
-//     return this.prisma[this.model].findMany();
-//   }
-// }
+import {  type Prisma } from "@prisma/client";
 
+export default class BaseRepository<DatabaseType> {
+  protected db:  DatabaseType;
+  protected model: Prisma.ModelName
 
-import { PrismaClient } from "@prisma/client";
-
-export default class BaseRepository {
-  protected db: PrismaClient;
-
-  constructor() {
-    this.db = new PrismaClient();
+  constructor(db: DatabaseType, model:Prisma.ModelName ){
+    this.db = db;
+    this.model = model
   }
 
-  protected async create<T>(model: string, data: Partial<T>, transformer: (data: any) => T): Promise<T> {
+  protected async create<T>(data: Partial<T>, transformer: (data: any) => T): Promise<T> {
     try {
-      const newItem = await this.db[model].create({ data });
+      const newItem = await this.db[this.model].create({ data });
       return transformer(newItem);
     } catch (error) {
       throw error;
     }
   }
 
-  protected async update<T>(
-    model: string,
+  protected async update<FormattedDataType,PrismaTableType>(
     id: string,
-    data: Partial<T>,
-    transformer: (data: any) => T
-  ): Promise<T> {
+    data: Partial<PrismaTableType>,
+    transformer: (data: any) => FormattedDataType
+  ): Promise<FormattedDataType> {
     try {
-      const updatedItem = await this.db[model].update({
+      const updatedItem = await this.db[this.model].update({
         where: {
           id,
         },
@@ -61,9 +36,36 @@ export default class BaseRepository {
     }
   }
 
-  protected async delete<T>(model: string, id: string, transformer: (data: any) => T): Promise<T> {
+  // get with pagination
+
+
+  // get all without pagination
+
+
+  // find my primary key
+
+  // find by a specific key 
+
+
+  // find unique 
+
+  public async findUniqueByKey<PrismaDTableType>(key: string,value:any): Promise<PrismaDTableType> {
     try {
-      const deletedUser = await this.db[model].delete({
+      const data =  await this.db[this.model].findUnique({
+        where: {
+          [key]: value
+        },
+      })
+
+      return data
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  protected async delete<T>(id: string, transformer: (data: any) => T): Promise<T> {
+    try {
+      const deletedUser = await this.db[this.model].delete({
         where: {
           id,
         },

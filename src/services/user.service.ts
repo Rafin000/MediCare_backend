@@ -1,14 +1,22 @@
-import { db } from "../db.server";
+import { DbType, db } from "../db.server";
 import { itemDeletedAndAdded } from "../helpers/utility";
-import { IUser, IUserCreateDto } from "../types/user.type";
+import { IUser } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
-import { userTransformer } from "../transformer";
 import BaseRepository from "../repository/base.repository";
+import { users } from "@prisma/client";
+import userCollection from "../transformer/user.transformer/user.collection";
+import userResource from "../transformer/user.transformer/user.resource";
 
-export default class UserService extends BaseRepository {
+export default class UserService extends BaseRepository<DbType> {
+
+    constructor(){
+      super(db, 'users')
+    }
+
   public async createUser(data: Partial<IUser>): Promise<IUser> {
     try {
-      const newUser = await this.create<IUser>("users", {
+      
+      const newUser = await this.create<IUser>( {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -18,7 +26,7 @@ export default class UserService extends BaseRepository {
         phone: data.phone,
         user_type: data.user_type
       },
-        userTransformer.getTransformer().transform
+        userResource.transform
       );
       return newUser;
     } catch (error) {
@@ -30,8 +38,7 @@ export default class UserService extends BaseRepository {
   public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
     try {
       const { email, firstName, lastName, phone } = payload;
-      const user = await this.update<IUser>(
-        'users',
+      const user = await this.update<IUser,users>(
         id,
         {
           ...(email ? { email } : {}),
@@ -39,7 +46,7 @@ export default class UserService extends BaseRepository {
           ...(lastName ? { lastName } : {}),
           ...(phone ? { phone } : {}),
         },
-        userTransformer.getTransformer().transform
+        userResource.transform
       );
       return user;
     } catch (error) {
@@ -50,7 +57,7 @@ export default class UserService extends BaseRepository {
 
   public async deleteUser(id: string): Promise<IUser> {
     try {
-      const user = await this.delete('users', id, userTransformer.getTransformer().transform);
+      const user = await this.delete(id, userResource.transform);
       return user;
     } catch (error) {
       throw error;
@@ -61,9 +68,7 @@ export default class UserService extends BaseRepository {
   public async getAllUsers(): Promise<IUser[]> {
     try {
       const allRawUsers = await db.users.findMany();
-      const allUsers = allRawUsers.map((user) =>
-        userTransformer.getTransformer().transform(user)
-      );
+      const allUsers = userCollection.transformCollection(allRawUsers);
       return allUsers;
     } catch (error) {
       throw error;
@@ -72,12 +77,8 @@ export default class UserService extends BaseRepository {
 
   public async findUserById(userId: string): Promise<IUser> | null {
     try {
-      const user = await db.users.findUnique({
-        where: {
-          id: userId
-        },
-      })
-      return userTransformer.getTransformer().transform(user)
+      const user = await this.findUniqueByKey<users>('id',userId)
+      return userResource.transform(user)
     } catch (err) {
       throw err;
     }
@@ -102,14 +103,11 @@ export default class UserService extends BaseRepository {
           },
         },
       });
-      return userTransformer.getTransformer().transform(user);
+      return userResource.transform(user);
     } catch (error) {
       throw error;
     }
   }
-
-
-
 
   public async getAllUserRoles(userId: string) {
     try {
