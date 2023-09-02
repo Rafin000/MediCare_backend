@@ -23,14 +23,14 @@ export default class HospitalService extends BaseRepository<DbType>{
     try {
       const newHospital = await this.create(
         {
-          registrationId: data.registrationId,
+          registration_id: data.registration_id,
           name: data.name,
           type: data.type,
-          phoneNumber: data.phoneNumber,
+          phone: data.phone,
           email: data.email,
           fax: data.fax,
-          clinicHour: data.clinicHour,
-          labHour: data.labHour,
+          clinic_hour: data.clinic_hour,
+          lab_hour: data.lab_hour,
           description: data.description
         },
         hospitalResource.transform

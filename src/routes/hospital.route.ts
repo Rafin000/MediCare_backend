@@ -14,3 +14,5 @@ hospitalRouter.post("/hospital", hospitalController.createHospital);
 //delete a hospital
 
 //update a hospital
+
+export default hospitalRouter;

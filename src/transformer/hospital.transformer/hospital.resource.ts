@@ -9,12 +9,12 @@ class HospitalResource implements Transformer {
       id: hospital.id,
       name: hospital.name,
       type: hospital.type,
-      registrationId: hospital.registrationId,
-      phoneNumber: hospital.phoneNumber,
+      registration_id: hospital.registrationId,
+      phone: hospital.phoneNumber,
       email: hospital.email,
       fax: hospital.fax,
-      clinicHour: hospital.clinicHour,
-      labHour: hospital.labHour,
+      clinic_hour: hospital.clinicHour,
+      lab_hour: hospital.labHour,
       description: hospital.description
     }
   }
