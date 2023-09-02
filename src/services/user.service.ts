@@ -9,23 +9,24 @@ import userResource from "../transformer/user.transformer/user.resource";
 
 export default class UserService extends BaseRepository<DbType> {
 
-    constructor(){
-      super(db, 'users')
-    }
+  constructor() {
+    super(db, 'users')
+  }
 
   public async createUser(data: Partial<IUser>): Promise<IUser> {
     try {
-      
-      const newUser = await this.create<IUser>( {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        password: data.password,
-        userName: data.userName,
-        dob: data.dob,
-        phone: data.phone,
-        user_type: data.user_type
-      },
+
+      const newUser = await this.create<IUser>(
+        {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          password: data.password,
+          userName: data.userName,
+          dob: data.dob,
+          phone: data.phone,
+          user_type: data.user_type
+        },
         userResource.transform
       );
       return newUser;
@@ -38,7 +39,7 @@ export default class UserService extends BaseRepository<DbType> {
   public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
     try {
       const { email, firstName, lastName, phone } = payload;
-      const user = await this.update<IUser,users>(
+      const user = await this.update<IUser, users>(
         id,
         {
           ...(email ? { email } : {}),
@@ -67,17 +68,25 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async getAllUsers(): Promise<IUser[]> {
     try {
-      const allRawUsers = await db.users.findMany();
-      const allUsers = userCollection.transformCollection(allRawUsers);
+      const allUsers = await this.getAll<IUser, users>(userCollection.transformCollection)
       return allUsers;
     } catch (error) {
       throw error;
     }
   }
 
+  public async findUserBySpecificKey(specificKey: string, userId: string): Promise<IUser> | null {
+    try {
+      const user = await this.findUniqueBySpecificKey<users>(specificKey, userId)
+      return userResource.transform(user)
+    } catch (err) {
+      throw err;
+    }
+  }
+
   public async findUserById(userId: string): Promise<IUser> | null {
     try {
-      const user = await this.findUniqueByKey<users>('id',userId)
+      const user = await this.findUniqueByKey<users>('id', userId)
       return userResource.transform(user)
     } catch (err) {
       throw err;
@@ -86,24 +95,8 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async getUser(id: string): Promise<IUser> {
     try {
-      const user = await db.users.findUnique({
-        where: {
-          id: id,
-        },
-        include: {
-          user_roles: {
-            include: {
-              role: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-            },
-          },
-        },
-      });
-      return userResource.transform(user);
+      const user = await this.get<IUser, users>(id, userResource.transform)
+      return user;
     } catch (error) {
       throw error;
     }

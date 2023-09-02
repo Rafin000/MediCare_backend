@@ -15,7 +15,7 @@ export default class UserMiddleware {
         throw new ApiError(httpStatus.NOT_FOUND, "User is not found!");
       }
 
-      next();
+      next()
     }
   )
 }

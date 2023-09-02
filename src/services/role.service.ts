@@ -1,16 +1,25 @@
-import { db } from "../db.server";
-import { roleTransformer } from "../transformer";
+import { roles } from "@prisma/client";
+import { DbType, db } from "../db.server";
+import BaseRepository from "../repository/base.repository";
+import roleResource from "../transformer/hospital.transformer/hospital.resource";
 import { IRole, IRoleUpdateDto } from "../types/role.type";
+import userCollection from "../transformer/user.transformer/user.collection";
+import roleCollection from "../transformer/role.transformer/role.collection";
 
-export default class RoleService {
+export default class RoleService extends BaseRepository<DbType> {
+
+  constructor() {
+    super(db, 'roles')
+  }
   public async createRole({ roleData }: { roleData: IRole }): Promise<IRole> {
     try {
-      const newRole = await db.roles.create({
-        data: {
+      const newRole = await this.create<IRole>(
+        {
           name: roleData.name,
           description: roleData.description,
         },
-      });
+        roleResource.transform
+      );
       return newRole;
     } catch (error) {
       throw error;
@@ -19,7 +28,7 @@ export default class RoleService {
 
   public async getAllRoles(): Promise<IRole[]> {
     try {
-      const allRoles = await db.roles.findMany();
+      const allRoles = await this.getAll<IRole, roles>(roleCollection.transformCollection);
       return allRoles;
     } catch (error) {
       throw error;
@@ -28,29 +37,24 @@ export default class RoleService {
 
   public async getRole(id: string): Promise<IRole> {
     try {
-      const role = await db.roles.findUnique({
-        where: {
-          id: id,
-        },
-      });
-      return roleTransformer.getTransformer().transform(role);
+      const role = await this.get(id, roleResource.transform);
+      return role;
     } catch (error) {
       throw error;
     }
   }
 
-  public async updateRole(id: string, payload: IRoleUpdateDto): Promise<IRole> {
+  public async updateRole(id: string, payload: Partial<IRole>): Promise<IRole> {
     try {
       const { name, description } = payload;
-      const role = await db.roles.update({
-        where: {
-          id: id,
-        },
-        data: {
+      const role = await this.update<IRole, roles>(
+        id,
+        {
           ...(name ? { name } : {}),
           ...(description ? { description } : {}),
         },
-      });
+        roleResource.transform
+      );
       return role;
     } catch (error) {
       throw error;
@@ -59,11 +63,7 @@ export default class RoleService {
 
   public async deleteRole(id: string): Promise<IRole> {
     try {
-      const role = await db.roles.delete({
-        where: {
-          id: id,
-        },
-      });
+      const role = await this.delete(id, roleResource.transform);
       return role;
     } catch (error) {
       throw error;

@@ -1,10 +1,9 @@
-import { IHospital } from "../types";
-import { Transformer } from "./transformer";
+import { IHospital } from "../../types";
+import { Transformer } from "../transformer";
 
-export class HospitalTransformer implements Transformer {
-  static getTransformer() {
-    return new HospitalTransformer();
-  }
+
+class HospitalResource implements Transformer {
+
   transform(hospital: any): IHospital {
     return {
       id: hospital.id,
@@ -20,3 +19,7 @@ export class HospitalTransformer implements Transformer {
     }
   }
 }
+
+const hospitalResource = new HospitalResource()
+
+export default hospitalResource;
