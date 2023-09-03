@@ -1,6 +1,7 @@
 import { Router } from "express"
 import userRouter from './users.route'
 import roleRouter from "./roles.route"
+import hospitalRouter from "./hospital.route"
 
 const router = Router()
 
@@ -12,6 +13,9 @@ type RouterType = {
 const defaultRoutes: RouterType[] = [
   {
     route: userRouter,
+  },
+  {
+    route: hospitalRouter,
   },
   {
     route: roleRouter

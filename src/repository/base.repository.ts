@@ -1,10 +1,11 @@
-import {  type Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
+import userCollection from "../transformer/user.transformer/user.collection";
 
 export default class BaseRepository<DatabaseType> {
-  protected db:  DatabaseType;
+  protected db: DatabaseType;
   protected model: Prisma.ModelName
 
-  constructor(db: DatabaseType, model:Prisma.ModelName ){
+  constructor(db: DatabaseType, model: Prisma.ModelName) {
     this.db = db;
     this.model = model
   }
@@ -18,7 +19,7 @@ export default class BaseRepository<DatabaseType> {
     }
   }
 
-  protected async update<FormattedDataType,PrismaTableType>(
+  protected async update<FormattedDataType, PrismaTableType>(
     id: string,
     data: Partial<PrismaTableType>,
     transformer: (data: any) => FormattedDataType
@@ -36,22 +37,51 @@ export default class BaseRepository<DatabaseType> {
     }
   }
 
-  // get with pagination
-
-
-  // get all without pagination
-
-
-  // find my primary key
-
-  // find by a specific key 
-
-
-  // find unique 
-
-  public async findUniqueByKey<PrismaDTableType>(key: string,value:any): Promise<PrismaDTableType> {
+  protected async get<FormattedDataType, PrismaTableType>(
+    id: string,
+    transform: (data: PrismaTableType) => FormattedDataType
+  ): Promise<FormattedDataType> {
     try {
-      const data =  await this.db[this.model].findUnique({
+      const user: PrismaTableType = await this.db[this.model].findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          user_roles: {
+            include: {
+              role: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      })
+      return transform(user);
+    } catch (error) {
+      throw error
+    }
+  }
+
+
+  protected async getAll<FormattedDataType, PrismaTableType>(
+    transformCollection: (data: PrismaTableType[]) => FormattedDataType[]
+  ): Promise<FormattedDataType[]> {
+    try {
+      const allRawUsers = await this.db[this.model].findMany();
+      return transformCollection(allRawUsers);
+    } catch (error) {
+      throw error
+    }
+  }
+
+
+
+  public async findUniqueByKey<PrismaTableType>(key: string, value: any): Promise<PrismaTableType> {
+    try {
+      const data = await this.db[this.model].findUnique({
         where: {
           [key]: value
         },
@@ -62,6 +92,22 @@ export default class BaseRepository<DatabaseType> {
       throw err;
     }
   }
+
+
+  public async findUniqueBySpecificKey<PrismaTableType>(specificKey: string, value: any): Promise<PrismaTableType> {
+    try {
+      const data = await this.db[this.model].findUnique({
+        where: {
+          [specificKey]: value
+        },
+      })
+
+      return data
+    } catch (err) {
+      throw err;
+    }
+  }
+
 
   protected async delete<T>(id: string, transformer: (data: any) => T): Promise<T> {
     try {
