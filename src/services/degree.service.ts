@@ -30,7 +30,7 @@ export default class DegreeService extends BaseRepository<DbType> {
 
   public async createDegree(data: Partial<IDegree>): Promise<IDegree> {
     try {
-      const newDegree = await this.create<IDegree>(
+      const newDegree = await this.create<Omit<degrees, 'id'>, IDegree>(
         {
           name: data.name,
           description: data.description

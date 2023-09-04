@@ -22,7 +22,7 @@ export default class HospitalService extends BaseRepository<DbType>{
 
   public async getHospital(hospitalId: string): Promise<IHospital> {
     try {
-      const hospital = await this.get<IHospital, hospitals>(hospitalId,hospitalResource.transform)
+      const hospital = await this.get<IHospital, hospitals>(hospitalId, hospitalResource.transform)
       return hospital
     } catch (error) {
       throw error
@@ -31,7 +31,7 @@ export default class HospitalService extends BaseRepository<DbType>{
 
   public async createHospital(data: Partial<IHospital>): Promise<IHospital> {
     try {
-      const newHospital = await this.create<IHospital>(
+      const newHospital = await this.create<Omit<hospitals, 'id'>, IHospital>(
         {
           registration_id: data.registration_id,
           name: data.name,

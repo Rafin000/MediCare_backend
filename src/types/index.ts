@@ -9,6 +9,7 @@ export * from './department.type'
 export * from './degree.type'
 export * from './specialization.type'
 export * from './award.type'
+export * from './doctor.type'
 export interface Request extends ExpressRequest {
   user: IUser
 

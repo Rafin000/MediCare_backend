@@ -18,7 +18,7 @@ export default class UserService extends BaseRepository<DbType> {
   public async createUser(data: Partial<IUser>): Promise<IUser> {
     try {
 
-      const newUser = await this.create<IUser>(
+      const newUser = await this.create<Omit<users, 'id'>, IUser>(
         {
           firstName: data.firstName,
           lastName: data.lastName,
@@ -27,7 +27,7 @@ export default class UserService extends BaseRepository<DbType> {
           userName: data.userName,
           dob: data.dob,
           phone: data.phone,
-          user_type: data.user_type
+          user_type: data.userType
         },
         userResource.transform
       );

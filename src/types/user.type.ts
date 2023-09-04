@@ -16,19 +16,19 @@ export type IUser = {
   email: string
   password: string
   phone: string | null
-  user_type: IUserType | undefined
+  userType: IUserType | undefined
   dob: string | null
   roles?: IRole[],
   // socials?: ISocial[]
 }
 
-export type IUserCreateDto = {
-  firstName: string
-  lastName: string
-  userName: string
-  email: string
-  password: string
-  phone: string | null
-  userType: IUserType | undefined
-  dob: string | null
-} 
+// export type IUserCreateDto = {
+//   firstName: string
+//   lastName: string
+//   userName: string
+//   email: string
+//   password: string
+//   phone: string | null
+//   userType: IUserType | undefined
+//   dob: string | null
+// } 

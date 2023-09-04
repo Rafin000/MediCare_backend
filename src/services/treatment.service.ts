@@ -30,7 +30,7 @@ export default class TreatmentService extends BaseRepository<DbType> {
 
   public async createTreatment(data: Partial<ITreatment>): Promise<ITreatment> {
     try {
-      const newTreatment = await this.create<ITreatment>(
+      const newTreatment = await this.create<Omit<treatments, 'id'>, ITreatment>(
         {
           type: data.type,
           description: data.description,

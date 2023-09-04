@@ -13,7 +13,7 @@ export default class RoleService extends BaseRepository<DbType> {
   }
   public async createRole({ roleData }: { roleData: IRole }): Promise<IRole> {
     try {
-      const newRole = await this.create<IRole>(
+      const newRole = await this.create<Omit<roles, 'id'>, IRole>(
         {
           name: roleData.name,
           description: roleData.description,

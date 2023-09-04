@@ -30,7 +30,7 @@ export default class DepartmentService extends BaseRepository<DbType> {
 
   public async createDepartment(data: Partial<IDepartment>): Promise<IDepartment> {
     try {
-      const newDepartment = await this.create<IDepartment>(
+      const newDepartment = await this.create<Omit<departments, 'id'>, IDepartment>(
         {
           name: data.name,
           description: data.description

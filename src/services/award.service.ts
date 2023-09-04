@@ -30,7 +30,7 @@ export default class AwardService extends BaseRepository<DbType> {
 
   public async createAward(data: Partial<IAward>): Promise<IAward> {
     try {
-      const newAward = await this.create<IAward>(
+      const newAward = await this.create<Omit<awards, 'id'>, IAward>(
         {
           name: data.name,
           description: data.description

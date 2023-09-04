@@ -1,4 +1,4 @@
-import { specializations } from "@prisma/client";
+import { specializations, treatments } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import specializationCollection from "../transformer/specialization.transformer/specialization.collection";
@@ -30,7 +30,7 @@ export default class SpecializationService extends BaseRepository<DbType> {
 
   public async createSpecialization(data: Partial<ISpecialization>): Promise<ISpecialization> {
     try {
-      const newSpecialization = await this.create<ISpecialization>(
+      const newSpecialization = await this.create<Omit<specializations, 'id'>, ISpecialization>(
         {
           name: data.name,
           description: data.description

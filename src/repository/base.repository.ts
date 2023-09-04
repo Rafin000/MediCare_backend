@@ -10,7 +10,7 @@ export default class BaseRepository<DatabaseType> {
     this.model = model
   }
 
-  protected async create<T>(data: Partial<T>, transformer: (data: any) => T): Promise<T> {
+  protected async create<parismaTypeData, formattedTypeData>(data: parismaTypeData, transformer: (data: parismaTypeData) => formattedTypeData): Promise<formattedTypeData> {
     try {
       const newItem = await this.db[this.model].create({ data });
       return transformer(newItem);
