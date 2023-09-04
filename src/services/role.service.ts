@@ -37,7 +37,7 @@ export default class RoleService extends BaseRepository<DbType> {
 
   public async getRole(id: string): Promise<IRole> {
     try {
-      const role = await this.get(id, roleResource.transform);
+      const role = await this.get<IRole, roles>(id, roleResource.transform);
       return role;
     } catch (error) {
       throw error;
@@ -63,7 +63,7 @@ export default class RoleService extends BaseRepository<DbType> {
 
   public async deleteRole(id: string): Promise<IRole> {
     try {
-      const role = await this.delete(id, roleResource.transform);
+      const role = await this.delete<IRole>(id, roleResource.transform);
       return role;
     } catch (error) {
       throw error;

@@ -4,15 +4,19 @@ import hospitalController from "../controllers/hospital.controller";
 const hospitalRouter = Router();
 
 
-//get a hospital
+//get all hospital
 hospitalRouter.get("/hospitals", hospitalController.getAllHospitals);
 
-//create a hospital
+//get a hospital
+hospitalRouter.get("/hospitals/:hospitalId?", hospitalController.getHospital);
 
+//create a hospital
 hospitalRouter.post("/hospital", hospitalController.createHospital);
 
 //delete a hospital
+hospitalRouter.delete("/hospitals/:hospitalId?", hospitalController.deleteHospital);
 
 //update a hospital
+hospitalRouter.put("/hospital/:hospitalId?", hospitalController.updateHospital);
 
 export default hospitalRouter;

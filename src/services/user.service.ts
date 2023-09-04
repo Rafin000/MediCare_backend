@@ -3,9 +3,11 @@ import { itemDeletedAndAdded } from "../helpers/utility";
 import { IUser } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
 import BaseRepository from "../repository/base.repository";
-import { users } from "@prisma/client";
+import { hospitals, users } from "@prisma/client";
 import userCollection from "../transformer/user.transformer/user.collection";
 import userResource from "../transformer/user.transformer/user.resource";
+import { IHospital } from "../types";
+import hospitalResource from "../transformer/hospital.transformer/hospital.resource";
 
 export default class UserService extends BaseRepository<DbType> {
 
@@ -58,7 +60,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async deleteUser(id: string): Promise<IUser> {
     try {
-      const user = await this.delete(id, userResource.transform);
+      const user = await this.delete<IUser>(id, userResource.transform);
       return user;
     } catch (error) {
       throw error;

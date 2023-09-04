@@ -1,3 +1,4 @@
+import { hospitals } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import hospitalCollection from "../transformer/hospital.transformer/hospital.collection";
@@ -12,16 +13,25 @@ export default class HospitalService extends BaseRepository<DbType>{
 
   public async getAllHospitals(): Promise<IHospital[]> {
     try {
-      const allHospital = await this.getAll(hospitalCollection.transformCollection);
+      const allHospital = await this.getAll<IHospital, hospitals>(hospitalCollection.transformCollection);
       return allHospital;
     } catch (error) {
       return Promise.reject(error);
     }
   }
 
+  public async getHospital(hospitalId: string): Promise<IHospital> {
+    try {
+      const hospital = await this.get<IHospital, hospitals>(hospitalId,hospitalResource.transform)
+      return hospital
+    } catch (error) {
+      throw error
+    }
+  }
+
   public async createHospital(data: Partial<IHospital>): Promise<IHospital> {
     try {
-      const newHospital = await this.create(
+      const newHospital = await this.create<IHospital>(
         {
           registration_id: data.registration_id,
           name: data.name,
@@ -38,6 +48,39 @@ export default class HospitalService extends BaseRepository<DbType>{
       return newHospital;
     } catch (error) {
       return error;
+    }
+  }
+
+  public async deleteHospital(hospitalId: string): Promise<IHospital> {
+    try {
+      const deletedHospital = await this.delete<IHospital>(hospitalId, hospitalResource.transform);
+      return deletedHospital;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async updateHospital(hospitalId: string, payload: Partial<IHospital>): Promise<IHospital> {
+    try {
+      const { name, type, email, fax, phone, description, lab_hour, clinic_hour, registration_id } = payload;
+      const updatedHospital = await this.update<IHospital, hospitals>(
+        hospitalId,
+        {
+          ...(name ? { name } : {}),
+          ...(type ? { type } : {}),
+          ...(email ? { email } : {}),
+          ...(phone ? { phone } : {}),
+          ...(fax ? { fax } : {}),
+          ...(clinic_hour ? { clinic_hour } : {}),
+          ...(lab_hour ? { lab_hour } : {}),
+          ...(description ? { description } : {}),
+          ...(registration_id ? { registration_id } : {}),
+        },
+        hospitalResource.transform
+      )
+      return updatedHospital;
+    } catch (error) {
+      throw error;
     }
   }
 }
