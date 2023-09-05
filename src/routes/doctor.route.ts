@@ -7,7 +7,7 @@ const doctorRouter = Router();
 doctorRouter.get("/doctors", doctorController.getAllDoctors);
 
 // Get a doctor
-doctorRouter.get("/doctor/:doctorId?", doctorController.getDoctor);
+doctorRouter.get("/doctors/:doctorId?", doctorController.getDoctor);
 
 // Create a doctor
 doctorRouter.post("/doctor", doctorController.createDoctor);
@@ -16,9 +16,9 @@ doctorRouter.post("/doctor", doctorController.createDoctor);
 doctorRouter.delete("/doctors/:doctorId?", doctorController.deleteDoctor);
 
 // Update a doctor
-doctorRouter.put("/doctor/:doctorId?", doctorController.updateDoctor);
+doctorRouter.put("/doctors/:doctorId?", doctorController.updateDoctor);
 
 //get a doctor_info
-doctorRouter.get("/doctors/infos/:doctorId?", doctorController.getDoctorInfos);
+doctorRouter.get("/doctors/info/:doctorId?", doctorController.getDoctorInfos);
 
 export default doctorRouter;

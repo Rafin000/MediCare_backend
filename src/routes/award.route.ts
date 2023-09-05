@@ -7,15 +7,15 @@ const awardRouter = Router();
 awardRouter.get("/awards", awardController.getAllAwards);
 
 // Get an award
-awardRouter.get("/award/:awardId?", awardController.getAward);
+awardRouter.get("/awards/:awardId?", awardController.getAward);
 
 // Create an award
 awardRouter.post("/award", awardController.createAward);
 
 // Delete an award
-awardRouter.delete("/award/:awardId?", awardController.deleteAward);
+awardRouter.delete("/awards/:awardId?", awardController.deleteAward);
 
 // Update an award
-awardRouter.put("/award/:awardId?", awardController.updateAward);
+awardRouter.put("/awards/:awardId?", awardController.updateAward);
 
 export default awardRouter;

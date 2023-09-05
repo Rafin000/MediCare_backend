@@ -7,7 +7,7 @@ const departmentRouter = Router();
 departmentRouter.get("/departments", departmentController.getAllDepartments);
 
 // Get a department
-departmentRouter.get("/department/:departmentId?", departmentController.getDepartment);
+departmentRouter.get("/departments/:departmentId?", departmentController.getDepartment);
 
 // Create a department
 departmentRouter.post("/department", departmentController.createDepartment);
@@ -16,6 +16,6 @@ departmentRouter.post("/department", departmentController.createDepartment);
 departmentRouter.delete("/departments/:departmentId?", departmentController.deleteDepartment);
 
 // Update a department
-departmentRouter.put("/department/:departmentId?", departmentController.updateDepartment);
+departmentRouter.put("/departments/:departmentId?", departmentController.updateDepartment);
 
 export default departmentRouter;

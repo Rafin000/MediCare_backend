@@ -17,6 +17,6 @@ hospitalRouter.post("/hospital", hospitalController.createHospital);
 hospitalRouter.delete("/hospitals/:hospitalId?", hospitalController.deleteHospital);
 
 //update a hospital
-hospitalRouter.put("/hospital/:hospitalId?", hospitalController.updateHospital);
+hospitalRouter.put("/hospitals/:hospitalId?", hospitalController.updateHospital);
 
 export default hospitalRouter;

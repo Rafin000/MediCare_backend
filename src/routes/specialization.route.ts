@@ -7,7 +7,7 @@ const specializationRouter = Router();
 specializationRouter.get("/specializations", specializationController.getAllSpecializations);
 
 // Get a specialization
-specializationRouter.get("/specialization/:specializationId?", specializationController.getSpecialization);
+specializationRouter.get("/specializations/:specializationId?", specializationController.getSpecialization);
 
 // Create a specialization
 specializationRouter.post("/specialization", specializationController.createSpecialization);
@@ -16,6 +16,6 @@ specializationRouter.post("/specialization", specializationController.createSpec
 specializationRouter.delete("/specializations/:specializationId?", specializationController.deleteSpecialization);
 
 // Update a specialization
-specializationRouter.put("/specialization/:specializationId?", specializationController.updateSpecialization);
+specializationRouter.put("/specializations/:specializationId?", specializationController.updateSpecialization);
 
 export default specializationRouter;

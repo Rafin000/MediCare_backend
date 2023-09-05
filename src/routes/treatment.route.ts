@@ -7,7 +7,7 @@ const treatmentRouter = Router();
 treatmentRouter.get("/treatments", treatmentController.getAllTreatments);
 
 //get a treatment
-treatmentRouter.get("/treatment/:treatmentId?", treatmentController.getTreatment);
+treatmentRouter.get("/treatments/:treatmentId?", treatmentController.getTreatment);
 
 // Create a treatment
 treatmentRouter.post("/treatment", treatmentController.createTreatment);
@@ -16,6 +16,6 @@ treatmentRouter.post("/treatment", treatmentController.createTreatment);
 treatmentRouter.delete("/treatments/:treatmentId?", treatmentController.deleteTreatment);
 
 // Update a treatment
-treatmentRouter.put("/treatment/:treatmentId?", treatmentController.updateTreatment);
+treatmentRouter.put("/treatments/:treatmentId?", treatmentController.updateTreatment);
 
 export default treatmentRouter;
