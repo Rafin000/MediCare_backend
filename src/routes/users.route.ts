@@ -6,7 +6,7 @@ const userRouter = Router();
 
 // get users list
 // -> baseUrl/users
-userRouter.get('/users', UserMiddleware.checkPayloadUserInformation, userController.getAllUsers)
+userRouter.get('/users', userController.getAllUsers)
 
 // get a single user info
 // -> baseUrl/users/:userId

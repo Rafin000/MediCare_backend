@@ -18,4 +18,7 @@ doctorRouter.delete("/doctors/:doctorId?", doctorController.deleteDoctor);
 // Update a doctor
 doctorRouter.put("/doctor/:doctorId?", doctorController.updateDoctor);
 
+//get a doctor_info
+doctorRouter.get("/doctors/infos/:doctorId?", doctorController.getDoctorInfos);
+
 export default doctorRouter;

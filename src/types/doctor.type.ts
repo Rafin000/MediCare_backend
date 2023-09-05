@@ -1,6 +1,6 @@
 export type IDoctor = {
   id: string,
-  phoneNumber: string,
+  phoneNumber: string | null,
   biography: string | null,
   isActive: boolean,
   registrationId: string,

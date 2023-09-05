@@ -28,9 +28,22 @@ export default class DoctorService extends BaseRepository<DbType> {
     }
   }
 
+  public async getDoctorInfos(doctorId: string) {
+    try {
+      const doctorInfos = await db.doctors_infos.findMany({
+        where: {
+          doctor_id: doctorId
+        }
+      });
+      return doctorInfos;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async createDoctor(data: Partial<IDoctor>): Promise<IDoctor> {
     try {
-      const newDoctor = await this.create<Omit<doctors,'id'>, IDoctor>(
+      const newDoctor = await this.create<Omit<doctors, 'id'>, IDoctor>(
         {
           biography: data.biography,
           phone_number: data.phoneNumber,

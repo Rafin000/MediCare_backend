@@ -14,7 +14,7 @@ import { Transformer } from "../transformer";
       userName: user.userName,
       dob: user.dob,
       phone: user.phone,
-      user_type: user.user_type,
+      userType: user.user_type,
       roles: user?.user_roles?.map(userRole => userRole?.role)?.map(role => ({ id: role.roleId, name: role.roleName }))
     }
   }

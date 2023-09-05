@@ -23,6 +23,15 @@ export default class DoctorController {
     }
   );
 
+  static getDoctorInfos = catchAsync(
+    async (req: Request, res: Response) => {
+      const doctorService = new DoctorService();
+      const { doctorId } = req.params;
+      const doctorInfos = await doctorService.getDoctorInfos(doctorId);
+      apiResponse.sendSuccess({ res: res, data: doctorInfos });
+    }
+  );
+
   static createDoctor = catchAsync(
     async (req: Request, res: Response) => {
       const payload = req.body as IDoctor;
