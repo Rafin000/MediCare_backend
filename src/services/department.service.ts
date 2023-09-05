@@ -1,4 +1,4 @@
-import { departments } from "@prisma/client";
+import { Department } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import departmentCollection from "../transformer/department.transformer/department.collection";
@@ -7,12 +7,12 @@ import { IDepartment } from "../types";
 
 export default class DepartmentService extends BaseRepository<DbType> {
   constructor() {
-    super(db, 'departments');
+    super(db, 'Department');
   }
 
   public async getAllDepartments(): Promise<IDepartment[]> {
     try {
-      const allDepartments = await this.getAll<IDepartment, departments>(departmentCollection.transformCollection);
+      const allDepartments = await this.getAll<IDepartment, Department>(departmentCollection.transformCollection);
       return allDepartments;
     } catch (error) {
       throw error;
@@ -21,7 +21,7 @@ export default class DepartmentService extends BaseRepository<DbType> {
 
   public async getDepartment(departmentId: string): Promise<IDepartment> {
     try {
-      const department = await this.get<IDepartment, departments>(departmentId, departmentResource.transform);
+      const department = await this.get<IDepartment, Department>(departmentId, departmentResource.transform);
       return department;
     } catch (error) {
       throw error;
@@ -30,7 +30,7 @@ export default class DepartmentService extends BaseRepository<DbType> {
 
   public async createDepartment(data: Partial<IDepartment>): Promise<IDepartment> {
     try {
-      const newDepartment = await this.create<Omit<departments, 'id'>, IDepartment>(
+      const newDepartment = await this.create<Omit<Department, 'id'>, IDepartment>(
         {
           name: data.name,
           description: data.description
@@ -55,7 +55,7 @@ export default class DepartmentService extends BaseRepository<DbType> {
   public async updateDepartment(departmentId: string, payload: Partial<IDepartment>): Promise<IDepartment> {
     try {
       const { name, description } = payload;
-      const updatedDepartment = await this.update<IDepartment, departments>(
+      const updatedDepartment = await this.update<IDepartment, Department>(
         departmentId,
         {
           ...(name ? { name } : {}),

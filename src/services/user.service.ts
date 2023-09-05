@@ -3,30 +3,28 @@ import { itemDeletedAndAdded } from "../helpers/utility";
 import { IUser } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
 import BaseRepository from "../repository/base.repository";
-import { hospitals, users } from "@prisma/client";
+import { User } from "@prisma/client";
 import userCollection from "../transformer/user.transformer/user.collection";
 import userResource from "../transformer/user.transformer/user.resource";
-import { IHospital } from "../types";
-import hospitalResource from "../transformer/hospital.transformer/hospital.resource";
 
 export default class UserService extends BaseRepository<DbType> {
 
   constructor() {
-    super(db, 'users')
+    super(db, 'User')
   }
 
   public async createUser(data: Partial<IUser>): Promise<IUser> {
     try {
 
-      const newUser = await this.create<Omit<users, 'id'>, IUser>(
+      const newUser = await this.create<Omit<User, 'id'>, IUser>(
         {
-          firstName: data.firstName,
-          lastName: data.lastName,
+          first_name: data.firstName,
+          last_name: data.lastName,
           email: data.email,
           password: data.password,
-          userName: data.userName,
+          username: data.userName,
           dob: data.dob,
-          phone: data.phone,
+          phone_number: data.phone,
           user_type: data.userType
         },
         userResource.transform
@@ -41,7 +39,7 @@ export default class UserService extends BaseRepository<DbType> {
   public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
     try {
       const { email, firstName, lastName, phone } = payload;
-      const user = await this.update<IUser, users>(
+      const user = await this.update<IUser, User>(
         id,
         {
           ...(email ? { email } : {}),
@@ -70,7 +68,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async getAllUsers(): Promise<IUser[]> {
     try {
-      const allUsers = await this.getAll<IUser, users>(userCollection.transformCollection)
+      const allUsers = await this.getAll<IUser, User>(userCollection.transformCollection)
       return allUsers;
     } catch (error) {
       throw error;
@@ -79,7 +77,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async findUserBySpecificKey(specificKey: string, userId: string): Promise<IUser> | null {
     try {
-      const user = await this.findUniqueBySpecificKey<users>(specificKey, userId)
+      const user = await this.findUniqueBySpecificKey<User>(specificKey, userId)
       return userResource.transform(user)
     } catch (err) {
       throw err;
@@ -88,7 +86,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async findUserById(userId: string): Promise<IUser> | null {
     try {
-      const user = await this.findUniqueByKey<users>('id', userId)
+      const user = await this.findUniqueByKey<User>('id', userId)
       return userResource.transform(user)
     } catch (err) {
       throw err;
@@ -97,7 +95,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async getUser(id: string): Promise<IUser> {
     try {
-      const user = await this.get<IUser, users>(id, userResource.transform)
+      const user = await this.get<IUser, User>(id, userResource.transform)
       return user;
     } catch (error) {
       throw error;
@@ -108,7 +106,7 @@ export default class UserService extends BaseRepository<DbType> {
     try {
       const userRoles = await db.user_role.findMany({
         where: {
-          userId: userId,
+          user_id: userId,
         },
         select: {
           role: true,
@@ -123,9 +121,9 @@ export default class UserService extends BaseRepository<DbType> {
   public async addOrRemoveUserRoles({ roleIds, userId }) {
     try {
       const userRoleRepository = new UserRoleRepository();
-      const UserALLRoles = await userRoleRepository.findAllRolesByUserId(userId);
+      const userALLRolesIds = await userRoleRepository.findAllRolesByUserId(userId);
       const { itemsToBeAdded, itemsToBeDeleted } = itemDeletedAndAdded(
-        UserALLRoles,
+        userALLRolesIds,
         roleIds
       );
       await userRoleRepository.bulkAdd(itemsToBeAdded, userId);

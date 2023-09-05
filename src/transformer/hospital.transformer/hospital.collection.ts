@@ -1,10 +1,10 @@
-import { hospitals } from "@prisma/client";
+import { Hospital } from "@prisma/client";
 import { IHospital } from "../../types";
 import { CollectionTransformer } from "../transformer";
 import roleResource from "./hospital.resource";
 
 class HospitalCollection implements CollectionTransformer {
-  transformCollection(requestedData: hospitals[]): IHospital[] {
+  transformCollection(requestedData: Hospital[]): IHospital[] {
     return requestedData.map((role) =>
       roleResource.transform(role)
     );

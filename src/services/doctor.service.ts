@@ -1,4 +1,4 @@
-import { doctors } from "@prisma/client";
+import { Doctor } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import doctorCollection from "../transformer/doctor.transformer/doctor.collection";
@@ -7,12 +7,12 @@ import { IDoctor } from "../types";
 
 export default class DoctorService extends BaseRepository<DbType> {
   constructor() {
-    super(db, 'doctors');
+    super(db, 'Doctor');
   }
 
   public async getAllDoctors(): Promise<IDoctor[]> {
     try {
-      const allDoctors = await this.getAll<IDoctor, doctors>(doctorCollection.transformCollection);
+      const allDoctors = await this.getAll<IDoctor, Doctor>(doctorCollection.transformCollection);
       return allDoctors;
     } catch (error) {
       throw error;
@@ -21,7 +21,7 @@ export default class DoctorService extends BaseRepository<DbType> {
 
   public async getDoctor(doctorId: string): Promise<IDoctor> {
     try {
-      const doctor = await this.get<IDoctor, doctors>(doctorId, doctorResource.transform);
+      const doctor = await this.get<IDoctor, Doctor>(doctorId, doctorResource.transform);
       return doctor;
     } catch (error) {
       throw error;
@@ -30,7 +30,7 @@ export default class DoctorService extends BaseRepository<DbType> {
 
   public async getDoctorInfos(doctorId: string) {
     try {
-      const doctorInfos = await db.doctors_infos.findMany({
+      const doctorInfos = await db.doctor_info.findMany({
         where: {
           doctor_id: doctorId
         }
@@ -41,15 +41,15 @@ export default class DoctorService extends BaseRepository<DbType> {
     }
   }
 
-  public async createDoctor(data: Partial<IDoctor>): Promise<IDoctor> {
+  public async createDoctor(data: Partial<IDoctor>, userId: string): Promise<IDoctor> {
     try {
-      const newDoctor = await this.create<Omit<doctors, 'id'>, IDoctor>(
+      const newDoctor = await this.create<Omit<Doctor, 'id'>, IDoctor>(
         {
+          user_id: userId,
           biography: data.biography,
           phone_number: data.phoneNumber,
           registration_id: data.registrationId,
           is_active: data.isActive,
-          chamber_location: data.chamberLocation,
           work_experience: data.workExperience
         },
         doctorResource.transform
@@ -72,7 +72,7 @@ export default class DoctorService extends BaseRepository<DbType> {
   public async updateDoctor(doctorId: string, payload: Partial<IDoctor>): Promise<IDoctor> {
     try {
       const { biography, isActive, workExperience, chamberLocation, phoneNumber, registrationId } = payload;
-      const updatedDoctor = await this.update<IDoctor, doctors>(
+      const updatedDoctor = await this.update<IDoctor, Doctor>(
         doctorId,
         {
           ...(isActive ? { isActive } : {}),

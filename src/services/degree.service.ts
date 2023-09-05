@@ -1,4 +1,4 @@
-import { degrees } from "@prisma/client";
+import { Degree } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import degreeCollection from "../transformer/degree.transformer/degree.collection";
@@ -7,12 +7,12 @@ import { IDegree } from "../types";
 
 export default class DegreeService extends BaseRepository<DbType> {
   constructor() {
-    super(db, 'degrees');
+    super(db, 'Degree');
   }
 
   public async getAllDegrees(): Promise<IDegree[]> {
     try {
-      const allDegrees = await this.getAll<IDegree, degrees>(degreeCollection.transformCollection);
+      const allDegrees = await this.getAll<IDegree, Degree>(degreeCollection.transformCollection);
       return allDegrees;
     } catch (error) {
       throw error;
@@ -21,7 +21,7 @@ export default class DegreeService extends BaseRepository<DbType> {
 
   public async getDegree(degreeId: string): Promise<IDegree> {
     try {
-      const degree = await this.get<IDegree, degrees>(degreeId, degreeResource.transform);
+      const degree = await this.get<IDegree, Degree>(degreeId, degreeResource.transform);
       return degree;
     } catch (error) {
       throw error;
@@ -30,7 +30,7 @@ export default class DegreeService extends BaseRepository<DbType> {
 
   public async createDegree(data: Partial<IDegree>): Promise<IDegree> {
     try {
-      const newDegree = await this.create<Omit<degrees, 'id'>, IDegree>(
+      const newDegree = await this.create<Omit<Degree, 'id'>, IDegree>(
         {
           name: data.name,
           description: data.description
@@ -55,7 +55,7 @@ export default class DegreeService extends BaseRepository<DbType> {
   public async updateDegree(degreeId: string, payload: Partial<IDegree>): Promise<IDegree> {
     try {
       const { name, description } = payload;
-      const updatedDegree = await this.update<IDegree, degrees>(
+      const updatedDegree = await this.update<IDegree, Degree>(
         degreeId,
         {
           ...(name ? { name } : {}),

@@ -1,4 +1,4 @@
-import { hospitals } from "@prisma/client";
+import { Hospital } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import hospitalCollection from "../transformer/hospital.transformer/hospital.collection";
@@ -8,12 +8,12 @@ import { IHospital } from "../types";
 export default class HospitalService extends BaseRepository<DbType>{
 
   constructor() {
-    super(db, 'hospitals')
+    super(db, 'Hospital')
   }
 
   public async getAllHospitals(): Promise<IHospital[]> {
     try {
-      const allHospital = await this.getAll<IHospital, hospitals>(hospitalCollection.transformCollection);
+      const allHospital = await this.getAll<IHospital, Hospital>(hospitalCollection.transformCollection);
       return allHospital;
     } catch (error) {
       return Promise.reject(error);
@@ -22,7 +22,7 @@ export default class HospitalService extends BaseRepository<DbType>{
 
   public async getHospital(hospitalId: string): Promise<IHospital> {
     try {
-      const hospital = await this.get<IHospital, hospitals>(hospitalId, hospitalResource.transform)
+      const hospital = await this.get<IHospital, Hospital>(hospitalId, hospitalResource.transform)
       return hospital
     } catch (error) {
       throw error
@@ -31,12 +31,12 @@ export default class HospitalService extends BaseRepository<DbType>{
 
   public async createHospital(data: Partial<IHospital>): Promise<IHospital> {
     try {
-      const newHospital = await this.create<Omit<hospitals, 'id'>, IHospital>(
+      const newHospital = await this.create<Omit<Hospital, 'id'>, IHospital>(
         {
           registration_id: data.registration_id,
           name: data.name,
           type: data.type,
-          phone: data.phone,
+          phone_number: data.phone,
           email: data.email,
           fax: data.fax,
           clinic_hour: data.clinic_hour,
@@ -63,7 +63,7 @@ export default class HospitalService extends BaseRepository<DbType>{
   public async updateHospital(hospitalId: string, payload: Partial<IHospital>): Promise<IHospital> {
     try {
       const { name, type, email, fax, phone, description, lab_hour, clinic_hour, registration_id } = payload;
-      const updatedHospital = await this.update<IHospital, hospitals>(
+      const updatedHospital = await this.update<IHospital, Hospital>(
         hospitalId,
         {
           ...(name ? { name } : {}),

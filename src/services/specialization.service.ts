@@ -1,4 +1,4 @@
-import { specializations, treatments } from "@prisma/client";
+import { Specialization } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import specializationCollection from "../transformer/specialization.transformer/specialization.collection";
@@ -7,12 +7,12 @@ import { ISpecialization } from "../types";
 
 export default class SpecializationService extends BaseRepository<DbType> {
   constructor() {
-    super(db, 'specializations');
+    super(db, 'Specialization');
   }
 
   public async getAllSpecializations(): Promise<ISpecialization[]> {
     try {
-      const allSpecializations = await this.getAll<ISpecialization, specializations>(specializationCollection.transformCollection);
+      const allSpecializations = await this.getAll<ISpecialization, Specialization>(specializationCollection.transformCollection);
       return allSpecializations;
     } catch (error) {
       throw error;
@@ -21,7 +21,7 @@ export default class SpecializationService extends BaseRepository<DbType> {
 
   public async getSpecialization(specializationId: string): Promise<ISpecialization> {
     try {
-      const specialization = await this.get<ISpecialization, specializations>(specializationId, specializationResource.transform);
+      const specialization = await this.get<ISpecialization, Specialization>(specializationId, specializationResource.transform);
       return specialization;
     } catch (error) {
       throw error;
@@ -30,7 +30,7 @@ export default class SpecializationService extends BaseRepository<DbType> {
 
   public async createSpecialization(data: Partial<ISpecialization>): Promise<ISpecialization> {
     try {
-      const newSpecialization = await this.create<Omit<specializations, 'id'>, ISpecialization>(
+      const newSpecialization = await this.create<Omit<Specialization, 'id'>, ISpecialization>(
         {
           name: data.name,
           description: data.description
@@ -55,7 +55,7 @@ export default class SpecializationService extends BaseRepository<DbType> {
   public async updateSpecialization(specializationId: string, payload: Partial<ISpecialization>): Promise<ISpecialization> {
     try {
       const { name, description } = payload;
-      const updatedSpecialization = await this.update<ISpecialization, specializations>(
+      const updatedSpecialization = await this.update<ISpecialization, Specialization>(
         specializationId,
         {
           ...(name ? { name } : {}),

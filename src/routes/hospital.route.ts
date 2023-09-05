@@ -1,22 +1,22 @@
 import { Router } from "express";
-import hospitalController from "../controllers/hospital.controller";
+import HospitalController from "../controllers/hospital.controller";
 
 const hospitalRouter = Router();
 
 
 //get all hospital
-hospitalRouter.get("/hospitals", hospitalController.getAllHospitals);
+hospitalRouter.get("/hospitals", HospitalController.getAllHospitals);
 
 //get a hospital
-hospitalRouter.get("/hospitals/:hospitalId?", hospitalController.getHospital);
+hospitalRouter.get("/hospitals/:hospitalId?", HospitalController.getHospital);
 
 //create a hospital
-hospitalRouter.post("/hospital", hospitalController.createHospital);
+hospitalRouter.post("/hospital", HospitalController.createHospital);
 
 //delete a hospital
-hospitalRouter.delete("/hospitals/:hospitalId?", hospitalController.deleteHospital);
+hospitalRouter.delete("/hospitals/:hospitalId?", HospitalController.deleteHospital);
 
 //update a hospital
-hospitalRouter.put("/hospitals/:hospitalId?", hospitalController.updateHospital);
+hospitalRouter.put("/hospitals/:hospitalId?", HospitalController.updateHospital);
 
 export default hospitalRouter;

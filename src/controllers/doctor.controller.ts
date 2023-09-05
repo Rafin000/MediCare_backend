@@ -35,8 +35,9 @@ export default class DoctorController {
   static createDoctor = catchAsync(
     async (req: Request, res: Response) => {
       const payload = req.body as IDoctor;
+      const userId = req.user.id;
       const doctorService = new DoctorService();
-      const newDoctor: IDoctor = await doctorService.createDoctor(payload);
+      const newDoctor: IDoctor = await doctorService.createDoctor(payload, userId);
       apiResponse.sendSuccess({ res: res, data: newDoctor });
     }
   );

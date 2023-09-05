@@ -1,4 +1,4 @@
-import { treatments } from "@prisma/client";
+import { Treatment } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import treatmentCollection from "../transformer/treatment.transformer/treatment.collection";
@@ -7,12 +7,12 @@ import { ITreatment } from "../types";
 
 export default class TreatmentService extends BaseRepository<DbType> {
   constructor() {
-    super(db, 'treatments');
+    super(db, 'Treatment');
   }
 
   public async getAllTreatments(): Promise<ITreatment[]> {
     try {
-      const allTreatments = await this.getAll<ITreatment, treatments>(treatmentCollection.transformCollection);
+      const allTreatments = await this.getAll<ITreatment, Treatment>(treatmentCollection.transformCollection);
       return allTreatments;
     } catch (error) {
       throw error;
@@ -21,7 +21,7 @@ export default class TreatmentService extends BaseRepository<DbType> {
 
   public async getTreatment(treatmentId: string): Promise<ITreatment> {
     try {
-      const treatment = await this.get<ITreatment, treatments>(treatmentId, treatmentResource.transform)
+      const treatment = await this.get<ITreatment, Treatment>(treatmentId, treatmentResource.transform)
       return treatment
     } catch (error) {
       throw error
@@ -30,7 +30,7 @@ export default class TreatmentService extends BaseRepository<DbType> {
 
   public async createTreatment(data: Partial<ITreatment>): Promise<ITreatment> {
     try {
-      const newTreatment = await this.create<Omit<treatments, 'id'>, ITreatment>(
+      const newTreatment = await this.create<Omit<Treatment, 'id'>, ITreatment>(
         {
           type: data.type,
           description: data.description,
@@ -55,7 +55,7 @@ export default class TreatmentService extends BaseRepository<DbType> {
   public async updateTreatment(treatmentId: string, payload: Partial<ITreatment>): Promise<ITreatment> {
     try {
       const { type, description } = payload;
-      const updatedTreatment = await this.update<ITreatment, treatments>(
+      const updatedTreatment = await this.update<ITreatment, Treatment>(
         treatmentId,
         {
           ...(type ? { type } : {}),

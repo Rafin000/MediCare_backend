@@ -6,4 +6,6 @@ export * from './degree.transformer'
 export * from './treatment.transformer'
 export * from './hospital.transformer'
 export * from './department.transformer'
+export * from './category.transformer'
+export * from './location.transformer'
 
