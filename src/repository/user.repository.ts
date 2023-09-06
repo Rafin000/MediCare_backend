@@ -1,7 +1,5 @@
 import { DbType, db } from "../db.server";
-import { itemDeletedAndAdded } from "../helpers/utility";
 import { IUser, IUserCreateDto } from "../types/user.type";
-import UserRoleRepository from "./user-role.repository";
 import BaseRepository from "./base.repository";
 import { User } from "@prisma/client";
 import userCollection from "../transformer/user.transformer/user.collection";

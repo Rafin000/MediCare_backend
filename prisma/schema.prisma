@@ -45,7 +45,8 @@ model User {
   user_type    UserType    @default(user)
   // user_socials user_social[]
   user_roles   user_role[]
-  dob          String?
+  doctor_profile Doctor?  
+  dob            String?
 
   @@map(name: "users")
 }
@@ -136,7 +137,8 @@ model Doctor {
   id                     String                  @id @unique @default(uuid())
   created_at             DateTime                @default(now())
   updated_at             DateTime                @updatedAt
-  user_id                String                  @relation(fields)
+  user                   User                    @relation(fields: [user_id], references: [id])
+  user_id                String                  @unique
   phone_number           String?
   biography              String?
   is_active              Boolean
