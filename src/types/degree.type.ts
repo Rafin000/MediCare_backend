@@ -3,3 +3,8 @@ export type IDegree = {
   name: string,
   description: string | null
 }
+
+export type IDegreeCreateDto = {
+  name: string,
+  description: string | null
+}

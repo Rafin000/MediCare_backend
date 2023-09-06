@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import doctorCollection from "../transformer/doctor.transformer/doctor.collection";
 import doctorResource from "../transformer/doctor.transformer/doctor.resource";
-import { IDoctor } from "../types";
+import { IDoctor, IDoctorCreateDto } from "../types";
 
 export default class DoctorService extends BaseRepository<DbType> {
   constructor() {
@@ -43,7 +43,7 @@ export default class DoctorService extends BaseRepository<DbType> {
 
   public async createDoctor(data: Partial<IDoctor>, userId: string): Promise<IDoctor> {
     try {
-      const newDoctor = await this.create<Omit<Doctor, 'id'>, IDoctor>(
+      const newDoctor = await this.create<IDoctorCreateDto, IDoctor>(
         {
           user_id: userId,
           biography: data.biography,
@@ -71,13 +71,12 @@ export default class DoctorService extends BaseRepository<DbType> {
 
   public async updateDoctor(doctorId: string, payload: Partial<IDoctor>): Promise<IDoctor> {
     try {
-      const { biography, isActive, workExperience, chamberLocation, phoneNumber, registrationId } = payload;
+      const { biography, isActive, workExperience, phoneNumber, registrationId } = payload;
       const updatedDoctor = await this.update<IDoctor, Doctor>(
         doctorId,
         {
           ...(isActive ? { isActive } : {}),
           ...(workExperience ? { workExperience } : {}),
-          ...(chamberLocation ? { chamberLocation } : {}),
           ...(biography ? { biography } : {}),
           ...(phoneNumber ? { phoneNumber } : {}),
           ...(registrationId ? { registrationId } : {}),

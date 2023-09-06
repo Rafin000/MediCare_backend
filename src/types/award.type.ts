@@ -3,3 +3,8 @@ export type IAward = {
   name: string,
   description: string | null
 }
+
+export type IAwardCreateDto = {
+  name: string,
+  description: string | null
+}

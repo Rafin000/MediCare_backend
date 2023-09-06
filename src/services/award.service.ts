@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import awardCollection from "../transformer/award.transformer/award.collection";
 import awardResource from "../transformer/award.transformer/award.resource";
-import { IAward } from "../types";
+import { IAward, IAwardCreateDto } from "../types";
 
 export default class AwardService extends BaseRepository<DbType> {
   constructor() {
@@ -30,7 +30,7 @@ export default class AwardService extends BaseRepository<DbType> {
 
   public async createAward(data: Partial<IAward>): Promise<IAward> {
     try {
-      const newAward = await this.create<Omit<Award, 'id'>, IAward>(
+      const newAward = await this.create<IAwardCreateDto, IAward>(
         {
           name: data.name,
           description: data.description

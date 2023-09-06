@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import degreeCollection from "../transformer/degree.transformer/degree.collection";
 import degreeResource from "../transformer/degree.transformer/degree.resource";
-import { IDegree } from "../types";
+import { IDegree, IDegreeCreateDto } from "../types";
 
 export default class DegreeService extends BaseRepository<DbType> {
   constructor() {
@@ -30,7 +30,7 @@ export default class DegreeService extends BaseRepository<DbType> {
 
   public async createDegree(data: Partial<IDegree>): Promise<IDegree> {
     try {
-      const newDegree = await this.create<Omit<Degree, 'id'>, IDegree>(
+      const newDegree = await this.create<IDegreeCreateDto, IDegree>(
         {
           name: data.name,
           description: data.description

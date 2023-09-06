@@ -22,13 +22,13 @@ export type IUser = {
   // socials?: ISocial[]
 }
 
-// export type IUserCreateDto = {
-//   firstName: string
-//   lastName: string
-//   userName: string
-//   email: string
-//   password: string
-//   phone: string | null
-//   userType: IUserType | undefined
-//   dob: string | null
-// } 
+export type IUserCreateDto = {
+  first_name: string
+  last_name: string
+  username: string
+  email: string
+  password: string
+  phone_number: string | null
+  user_type: IUserType | undefined
+  dob: string | null
+} 

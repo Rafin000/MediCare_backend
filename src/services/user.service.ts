@@ -1,11 +1,12 @@
 import { DbType, db } from "../db.server";
 import { itemDeletedAndAdded } from "../helpers/utility";
-import { IUser } from "../types/user.type";
+import { IUser, IUserCreateDto } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
 import BaseRepository from "../repository/base.repository";
 import { User } from "@prisma/client";
 import userCollection from "../transformer/user.transformer/user.collection";
 import userResource from "../transformer/user.transformer/user.resource";
+import { count } from "console";
 
 export default class UserService extends BaseRepository<DbType> {
 
@@ -16,7 +17,7 @@ export default class UserService extends BaseRepository<DbType> {
   public async createUser(data: Partial<IUser>): Promise<IUser> {
     try {
 
-      const newUser = await this.create<Omit<User, 'id'>, IUser>(
+      const newUser = await this.create<IUserCreateDto, IUser>(
         {
           first_name: data.firstName,
           last_name: data.lastName,
@@ -25,7 +26,7 @@ export default class UserService extends BaseRepository<DbType> {
           username: data.userName,
           dob: data.dob,
           phone_number: data.phone,
-          user_type: data.userType
+          user_type: data.userType,
         },
         userResource.transform
       );

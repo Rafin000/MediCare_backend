@@ -2,7 +2,7 @@ import { Role } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import roleResource from "../transformer/hospital.transformer/hospital.resource";
-import { IRole, IRoleUpdateDto } from "../types/role.type";
+import { IRole, IRoleCreateDto } from "../types/role.type";
 import userCollection from "../transformer/user.transformer/user.collection";
 import roleCollection from "../transformer/role.transformer/role.collection";
 
@@ -13,7 +13,7 @@ export default class RoleService extends BaseRepository<DbType> {
   }
   public async createRole({ roleData }: { roleData: IRole }): Promise<IRole> {
     try {
-      const newRole = await this.create<Omit<Role, 'id'>, IRole>(
+      const newRole = await this.create<IRoleCreateDto, IRole>(
         {
           name: roleData.name,
           description: roleData.description,

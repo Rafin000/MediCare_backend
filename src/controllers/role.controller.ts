@@ -1,6 +1,6 @@
 import apiResponse from "../services/apiResponse.service";
 import RoleService from "../services/role.service";
-import { IRole, IRoleUpdateDto } from "../types/role.type";
+import { IRole } from "../types/role.type";
 import catchAsync from "../utils/catchAsync";
 import { Request } from "../types";
 import { Response } from "express";
@@ -35,7 +35,7 @@ export default class RoleController {
   static updateRole = catchAsync(
     async (req: Request, res: Response) => {
       const { roleId } = req.params
-      const requestDto = req.body as IRoleUpdateDto
+      const requestDto = req.body as Partial<IRole>
       const roleService = new RoleService();
       const updatedRole: IRole = await roleService.updateRole(roleId, requestDto)
       apiResponse.sendSuccess({ res: res, data: updatedRole })

@@ -4,6 +4,8 @@ export type IRole = {
   id: string
 }
 
-export interface IRoleUpdateDto extends Partial<IRole> {
 
+export type IRoleCreateDto = {
+  name: string,
+  description: string | null
 }

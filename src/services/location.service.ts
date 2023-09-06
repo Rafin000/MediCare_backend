@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import locationCollection from "../transformer/location.transformer/location.collection";
 import locationResource from "../transformer/location.transformer/location.resource";
-import { ILocation } from "../types";
+import { ILocation, ILocationCreateDto } from "../types";
 
 export default class LocationService extends BaseRepository<DbType> {
   constructor() {
@@ -30,7 +30,7 @@ export default class LocationService extends BaseRepository<DbType> {
 
   public async createLocation(data: Partial<ILocation>): Promise<ILocation> {
     try {
-      const newLocation = await this.create<Omit<Location, 'id'>, ILocation>(
+      const newLocation = await this.create<ILocationCreateDto, ILocation>(
         {
           latitude: data.latitude,
           longitude: data.longitude,

@@ -7,11 +7,11 @@ class DoctorResource implements Transformer {
   transform(doctor: any): IDoctor {
     return {
       id: doctor.id,
+      userId: doctor.userId,
       registrationId: doctor.registration_Id,
       phoneNumber: doctor.phone_number,
       biography: doctor.biography,
       isActive: doctor.is_active,
-      chamberLocation: doctor.chamber_location,
       workExperience: doctor.work_experience
     }
   }

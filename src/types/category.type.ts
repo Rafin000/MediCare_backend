@@ -3,3 +3,8 @@ export type ICategory = {
   name: string,
   description: string | null
 }
+
+export type ICategoryCreateDto = {
+  name: string,
+  description: string | null
+}

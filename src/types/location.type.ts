@@ -9,3 +9,14 @@ export type ILocation = {
   thana: string | null,
   district: string | null
 }
+
+export type ILocationCreateDto = {
+  longitude: string,
+  latitude: string,
+  street: string | null,
+  address: string | null,
+  country: string | null,
+  division: string | null,
+  thana: string | null,
+  district: string | null
+}

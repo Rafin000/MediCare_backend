@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import treatmentCollection from "../transformer/treatment.transformer/treatment.collection";
 import treatmentResource from "../transformer/treatment.transformer/treatment.resource";
-import { ITreatment } from "../types";
+import { ITreatment, ITreatmentCreateDto } from "../types";
 
 export default class TreatmentService extends BaseRepository<DbType> {
   constructor() {
@@ -30,7 +30,7 @@ export default class TreatmentService extends BaseRepository<DbType> {
 
   public async createTreatment(data: Partial<ITreatment>): Promise<ITreatment> {
     try {
-      const newTreatment = await this.create<Omit<Treatment, 'id'>, ITreatment>(
+      const newTreatment = await this.create<ITreatmentCreateDto, ITreatment>(
         {
           type: data.type,
           description: data.description,

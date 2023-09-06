@@ -3,3 +3,8 @@ export type ITreatment = {
   type: string,
   description: string | null
 }
+
+export type ITreatmentCreateDto = {
+  type: string,
+  description: string | null
+}

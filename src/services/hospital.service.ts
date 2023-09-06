@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import hospitalCollection from "../transformer/hospital.transformer/hospital.collection";
 import hospitalResource from "../transformer/hospital.transformer/hospital.resource";
-import { IHospital } from "../types";
+import { IHospital, IHospitalCreateDto } from "../types";
 
 export default class HospitalService extends BaseRepository<DbType>{
 
@@ -31,16 +31,16 @@ export default class HospitalService extends BaseRepository<DbType>{
 
   public async createHospital(data: Partial<IHospital>): Promise<IHospital> {
     try {
-      const newHospital = await this.create<Omit<Hospital, 'id'>, IHospital>(
+      const newHospital = await this.create<IHospitalCreateDto, IHospital>(
         {
-          registration_id: data.registration_id,
+          registration_id: data.registrationId,
           name: data.name,
           type: data.type,
           phone_number: data.phone,
           email: data.email,
           fax: data.fax,
-          clinic_hour: data.clinic_hour,
-          lab_hour: data.lab_hour,
+          clinic_hour: data.clinicHour,
+          lab_hour: data.labHour,
           description: data.description
         },
         hospitalResource.transform
@@ -62,7 +62,7 @@ export default class HospitalService extends BaseRepository<DbType>{
 
   public async updateHospital(hospitalId: string, payload: Partial<IHospital>): Promise<IHospital> {
     try {
-      const { name, type, email, fax, phone, description, lab_hour, clinic_hour, registration_id } = payload;
+      const { name, type, email, fax, phone, description, labHour, clinicHour, registrationId } = payload;
       const updatedHospital = await this.update<IHospital, Hospital>(
         hospitalId,
         {
@@ -71,10 +71,10 @@ export default class HospitalService extends BaseRepository<DbType>{
           ...(email ? { email } : {}),
           ...(phone ? { phone } : {}),
           ...(fax ? { fax } : {}),
-          ...(clinic_hour ? { clinic_hour } : {}),
-          ...(lab_hour ? { lab_hour } : {}),
+          ...(clinicHour ? { clinicHour } : {}),
+          ...(labHour ? { labHour } : {}),
           ...(description ? { description } : {}),
-          ...(registration_id ? { registration_id } : {}),
+          ...(registrationId ? { registrationId } : {}),
         },
         hospitalResource.transform
       )

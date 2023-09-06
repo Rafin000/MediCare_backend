@@ -2,8 +2,8 @@ import { IUser } from "../../types";
 import { Transformer } from "../transformer";
 
 
- class UserResource implements Transformer {
- 
+class UserResource implements Transformer {
+
   transform(user: any): IUser {
     return {
       id: user.userId,

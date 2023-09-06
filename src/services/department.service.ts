@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import departmentCollection from "../transformer/department.transformer/department.collection";
 import departmentResource from "../transformer/department.transformer/department.resource";
-import { IDepartment } from "../types";
+import { IDepartment, IDepartmentCreateDto } from "../types";
 
 export default class DepartmentService extends BaseRepository<DbType> {
   constructor() {
@@ -30,7 +30,7 @@ export default class DepartmentService extends BaseRepository<DbType> {
 
   public async createDepartment(data: Partial<IDepartment>): Promise<IDepartment> {
     try {
-      const newDepartment = await this.create<Omit<Department, 'id'>, IDepartment>(
+      const newDepartment = await this.create<IDepartmentCreateDto, IDepartment>(
         {
           name: data.name,
           description: data.description

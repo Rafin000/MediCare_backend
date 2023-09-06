@@ -8,6 +8,8 @@ import degreeRouter from "./degree.route"
 import awardRouter from "./award.route"
 import specializationRouter from "./specialization.route"
 import departmentRouter from "./department.route"
+import categoryRouter from "./category.route"
+import locationRouter from "./location.route"
 
 const router = Router()
 
@@ -43,6 +45,12 @@ const defaultRoutes: RouterType[] = [
   },
   {
     route: departmentRouter
+  },
+  {
+    route: categoryRouter
+  },
+  {
+    route: locationRouter
   }
 ]
 

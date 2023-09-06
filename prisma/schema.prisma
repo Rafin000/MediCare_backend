@@ -14,6 +14,8 @@ datasource db {
 view doctor_info {
   user_id      String
   doctor_id    String   @id @unique
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
   first_name   String
   last_name    String
   username     String
@@ -31,6 +33,8 @@ enum UserType {
 
 model User {
   id           String      @id @unique @default(uuid())
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
   first_name   String
   last_name    String
   username     String
@@ -78,6 +82,8 @@ model hospital_social {
 
 model Role {
   id          String      @id @unique @default(uuid())
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
   name        String
   description String?
   user_roles  user_role[]
@@ -96,6 +102,8 @@ model user_role {
 
 model Hospital {
   id                   String                @id @unique @default(uuid())
+  created_at           DateTime              @default(now())
+  updated_at           DateTime              @updatedAt
   name                 String
   type                 String
   phone_number         String?
@@ -125,6 +133,8 @@ model hospital_doctor {
 
 model Doctor {
   id                     String                  @id @unique @default(uuid())
+  created_at             DateTime                @default(now())
+  updated_at             DateTime                @updatedAt
   user_id                String
   phone_number           String?
   biography              String?
@@ -142,6 +152,8 @@ model Doctor {
 
 model Blog {
   id              String          @id @unique @default(uuid())
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
   title           String
   Description     String?
   blog_categories blog_category[]
@@ -160,6 +172,8 @@ model blog_category {
 
 model Category {
   id              String          @id @unique @default(uuid())
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
   name            String
   description     String?
   blog_categories blog_category[]
@@ -169,6 +183,8 @@ model Category {
 
 model Treatment {
   id                  String               @id @unique @default(uuid())
+  created_at          DateTime             @default(now())
+  updated_at          DateTime             @updatedAt
   type                String
   description         String?
   hospital_treatments hospital_treatment[]
@@ -187,6 +203,8 @@ model hospital_treatment {
 
 model Department {
   id                   String                @id @unique @default(uuid())
+  created_at           DateTime              @default(now())
+  updated_at           DateTime              @updatedAt
   name                 String
   description          String?
   hospital_departments hospital_department[]
@@ -205,6 +223,8 @@ model hospital_department {
 
 model Location {
   id                 String              @id @unique @default(uuid())
+  created_at         DateTime            @default(now())
+  updated_at         DateTime            @updatedAt
   longitude          String
   latitude           String
   street             String?
@@ -241,6 +261,8 @@ model hospital_location {
 
 model Specialization {
   id                     String                  @id @unique @default(uuid())
+  created_at             DateTime                @default(now())
+  updated_at             DateTime                @updatedAt
   name                   String
   description            String?
   doctor_specializations doctor_specialization[]
@@ -259,6 +281,8 @@ model doctor_specialization {
 
 model Award {
   id            String         @id @unique @default(uuid())
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
   name          String
   description   String?
   doctor_awards doctor_award[]
@@ -277,6 +301,8 @@ model doctor_award {
 
 model Degree {
   id             String          @id @unique @default(uuid())
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
   name           String
   description    String?
   doctor_degrees doctor_degree[]

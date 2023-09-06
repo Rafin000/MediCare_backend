@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import categoryCollection from "../transformer/category.transformer/category.collection";
 import categoryResource from "../transformer/category.transformer/category.resource";
-import { ICategory } from "../types";
+import { ICategory, ICategoryCreateDto } from "../types";
 
 export default class CategoryService extends BaseRepository<DbType> {
   constructor() {
@@ -30,7 +30,7 @@ export default class CategoryService extends BaseRepository<DbType> {
 
   public async createCategory(data: Partial<ICategory>): Promise<ICategory> {
     try {
-      const newCategory = await this.create<Omit<Category, 'id'>, ICategory>(
+      const newCategory = await this.create<ICategoryCreateDto, ICategory>(
         {
           name: data.name,
           description: data.description
