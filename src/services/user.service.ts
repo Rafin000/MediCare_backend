@@ -1,31 +1,34 @@
 import { DbType, db } from "../db.server";
 import { itemDeletedAndAdded } from "../helpers/utility";
-import { IUser } from "../types/user.type";
+import { IUser, IUserCreateDto } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
 import BaseRepository from "../repository/base.repository";
-import { users } from "@prisma/client";
+import { User } from "@prisma/client";
 import userCollection from "../transformer/user.transformer/user.collection";
 import userResource from "../transformer/user.transformer/user.resource";
+import UserRepository from "../repository/user.repository";
 
-export default class UserService extends BaseRepository<DbType> {
-
+export default class UserService {
+  protected readonly userRoleRepository: UserRoleRepository
+  protected readonly userRepository: UserRepository
   constructor() {
-    super(db, 'users')
+    this.userRepository = new UserRepository()
+    this.userRoleRepository = new UserRoleRepository()
   }
 
   public async createUser(data: Partial<IUser>): Promise<IUser> {
     try {
 
-      const newUser = await this.create<IUser>(
+      const newUser = await this.userRepository.create<IUserCreateDto, IUser>(
         {
-          firstName: data.firstName,
-          lastName: data.lastName,
+          first_name: data.firstName,
+          last_name: data.lastName,
           email: data.email,
           password: data.password,
-          userName: data.userName,
+          username: data.userName,
           dob: data.dob,
-          phone: data.phone,
-          user_type: data.user_type
+          phone_number: data.phone,
+          user_type: data.userType,
         },
         userResource.transform
       );
@@ -39,7 +42,7 @@ export default class UserService extends BaseRepository<DbType> {
   public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
     try {
       const { email, firstName, lastName, phone } = payload;
-      const user = await this.update<IUser, users>(
+      const user = await this.userRepository.update<IUser, User>(
         id,
         {
           ...(email ? { email } : {}),
@@ -58,7 +61,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async deleteUser(id: string): Promise<IUser> {
     try {
-      const user = await this.delete(id, userResource.transform);
+      const user = await this.userRepository.delete<IUser>(id, userResource.transform);
       return user;
     } catch (error) {
       throw error;
@@ -68,7 +71,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async getAllUsers(): Promise<IUser[]> {
     try {
-      const allUsers = await this.getAll<IUser, users>(userCollection.transformCollection)
+      const allUsers = await this.userRepository.getAll<IUser, User>(userCollection.transformCollection)
       return allUsers;
     } catch (error) {
       throw error;
@@ -77,7 +80,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async findUserBySpecificKey(specificKey: string, userId: string): Promise<IUser> | null {
     try {
-      const user = await this.findUniqueBySpecificKey<users>(specificKey, userId)
+      const user = await this.userRepository.findUniqueBySpecificKey<User>(specificKey, userId)
       return userResource.transform(user)
     } catch (err) {
       throw err;
@@ -86,7 +89,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async findUserById(userId: string): Promise<IUser> | null {
     try {
-      const user = await this.findUniqueByKey<users>('id', userId)
+      const user = await this.userRepository.findUniqueByKey<User>('id', userId)
       return userResource.transform(user)
     } catch (err) {
       throw err;
@@ -95,7 +98,7 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async getUser(id: string): Promise<IUser> {
     try {
-      const user = await this.get<IUser, users>(id, userResource.transform)
+      const user = await this.userRepository.get<IUser, User>(id, userResource.transform)
       return user;
     } catch (error) {
       throw error;
@@ -106,7 +109,7 @@ export default class UserService extends BaseRepository<DbType> {
     try {
       const userRoles = await db.user_role.findMany({
         where: {
-          userId: userId,
+          user_id: userId,
         },
         select: {
           role: true,
@@ -120,14 +123,14 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async addOrRemoveUserRoles({ roleIds, userId }) {
     try {
-      const userRoleRepository = new UserRoleRepository();
-      const UserALLRoles = await userRoleRepository.findAllRolesByUserId(userId);
+   
+      const userALLRolesIds = await this.userRoleRepository.findAllRolesByUserId(userId);
       const { itemsToBeAdded, itemsToBeDeleted } = itemDeletedAndAdded(
-        UserALLRoles,
+        userALLRolesIds,
         roleIds
       );
-      await userRoleRepository.bulkAdd(itemsToBeAdded, userId);
-      await userRoleRepository.bulkDelete(itemsToBeDeleted, userId);
+      await this.userRoleRepository.bulkAdd(itemsToBeAdded, userId);
+      await this.userRoleRepository.bulkDelete(itemsToBeDeleted, userId);
     } catch (error) {
       throw error;
     }

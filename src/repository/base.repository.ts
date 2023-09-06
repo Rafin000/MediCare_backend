@@ -10,7 +10,7 @@ export default class BaseRepository<DatabaseType> {
     this.model = model
   }
 
-  protected async create<T>(data: Partial<T>, transformer: (data: any) => T): Promise<T> {
+  public async create<parismaTypeData, formattedTypeData>(data: parismaTypeData, transformer: (data: parismaTypeData) => formattedTypeData): Promise<formattedTypeData> {
     try {
       const newItem = await this.db[this.model].create({ data });
       return transformer(newItem);
@@ -19,7 +19,7 @@ export default class BaseRepository<DatabaseType> {
     }
   }
 
-  protected async update<FormattedDataType, PrismaTableType>(
+  public async update<FormattedDataType, PrismaTableType>(
     id: string,
     data: Partial<PrismaTableType>,
     transformer: (data: any) => FormattedDataType
@@ -37,7 +37,7 @@ export default class BaseRepository<DatabaseType> {
     }
   }
 
-  protected async get<FormattedDataType, PrismaTableType>(
+  public async get<FormattedDataType, PrismaTableType>(
     id: string,
     transform: (data: PrismaTableType) => FormattedDataType
   ): Promise<FormattedDataType> {
@@ -66,7 +66,7 @@ export default class BaseRepository<DatabaseType> {
   }
 
 
-  protected async getAll<FormattedDataType, PrismaTableType>(
+  public async getAll<FormattedDataType, PrismaTableType>(
     transformCollection: (data: PrismaTableType[]) => FormattedDataType[]
   ): Promise<FormattedDataType[]> {
     try {
@@ -109,7 +109,7 @@ export default class BaseRepository<DatabaseType> {
   }
 
 
-  protected async delete<T>(id: string, transformer: (data: any) => T): Promise<T> {
+  public async delete<T>(id: string, transformer: (data: any) => T): Promise<T> {
     try {
       const deletedUser = await this.db[this.model].delete({
         where: {

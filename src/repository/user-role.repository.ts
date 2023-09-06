@@ -8,10 +8,10 @@ export default class UserRoleRepository {
       const userAllRoles = (
         await db.user_role.findMany({
           where: {
-            userId: userId,
+            user_id: userId,
           },
         })
-      ).map((i) => i.roleId);
+      ).map((i) => i.role_id);
       return Promise.resolve(userAllRoles);
     } catch (error) {
       return Promise.resolve(error);
@@ -23,8 +23,8 @@ export default class UserRoleRepository {
       await db.user_role.createMany({
         data: roleIds.map((i) => {
           return {
-            userId: userId,
-            roleId: i,
+            user_id: userId,
+            role_id: i,
           };
         }),
       });
@@ -37,8 +37,8 @@ export default class UserRoleRepository {
     try {
       await db.user_role.deleteMany({
         where: {
-          userId: userId,
-          roleId: {
+          user_id: userId,
+          role_id: {
             in: roleIds,
           },
         },

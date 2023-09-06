@@ -2,8 +2,8 @@ import { IUser } from "../../types";
 import { Transformer } from "../transformer";
 
 
- class UserResource implements Transformer {
- 
+class UserResource implements Transformer {
+
   transform(user: any): IUser {
     return {
       id: user.userId,
@@ -14,7 +14,7 @@ import { Transformer } from "../transformer";
       userName: user.userName,
       dob: user.dob,
       phone: user.phone,
-      user_type: user.user_type,
+      userType: user.user_type,
       roles: user?.user_roles?.map(userRole => userRole?.role)?.map(role => ({ id: role.roleId, name: role.roleName }))
     }
   }
