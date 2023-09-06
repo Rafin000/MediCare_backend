@@ -6,12 +6,12 @@ import BaseRepository from "../repository/base.repository";
 import { User } from "@prisma/client";
 import userCollection from "../transformer/user.transformer/user.collection";
 import userResource from "../transformer/user.transformer/user.resource";
-import { count } from "console";
 
 export default class UserService extends BaseRepository<DbType> {
-
+  protected readonly userRoleRepository: UserRoleRepository
   constructor() {
     super(db, 'User')
+    this.userRoleRepository = new UserRoleRepository()
   }
 
   public async createUser(data: Partial<IUser>): Promise<IUser> {
@@ -121,14 +121,14 @@ export default class UserService extends BaseRepository<DbType> {
 
   public async addOrRemoveUserRoles({ roleIds, userId }) {
     try {
-      const userRoleRepository = new UserRoleRepository();
-      const userALLRolesIds = await userRoleRepository.findAllRolesByUserId(userId);
+   
+      const userALLRolesIds = await this.userRoleRepository.findAllRolesByUserId(userId);
       const { itemsToBeAdded, itemsToBeDeleted } = itemDeletedAndAdded(
         userALLRolesIds,
         roleIds
       );
-      await userRoleRepository.bulkAdd(itemsToBeAdded, userId);
-      await userRoleRepository.bulkDelete(itemsToBeDeleted, userId);
+      await this.userRoleRepository.bulkAdd(itemsToBeAdded, userId);
+      await this.userRoleRepository.bulkDelete(itemsToBeDeleted, userId);
     } catch (error) {
       throw error;
     }

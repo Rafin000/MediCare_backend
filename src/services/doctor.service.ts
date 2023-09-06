@@ -1,18 +1,19 @@
 import { Doctor } from "@prisma/client";
-import { DbType, db } from "../db.server";
-import BaseRepository from "../repository/base.repository";
 import doctorCollection from "../transformer/doctor.transformer/doctor.collection";
 import doctorResource from "../transformer/doctor.transformer/doctor.resource";
 import { IDoctor, IDoctorCreateDto } from "../types";
+import DoctorRepository from "../repository/doctor.repository";
 
-export default class DoctorService extends BaseRepository<DbType> {
-  constructor() {
-    super(db, 'Doctor');
+export default class DoctorService {
+  protected readonly doctorRepo: DoctorRepository
+
+  constructor(){
+    this.doctorRepo = new DoctorRepository()
   }
 
   public async getAllDoctors(): Promise<IDoctor[]> {
     try {
-      const allDoctors = await this.getAll<IDoctor, Doctor>(doctorCollection.transformCollection);
+      const allDoctors = await this.doctorRepo.getAll<IDoctor, Doctor>(doctorCollection.transformCollection);
       return allDoctors;
     } catch (error) {
       throw error;
@@ -21,21 +22,8 @@ export default class DoctorService extends BaseRepository<DbType> {
 
   public async getDoctor(doctorId: string): Promise<IDoctor> {
     try {
-      const doctor = await this.get<IDoctor, Doctor>(doctorId, doctorResource.transform);
+      const doctor = await this.doctorRepo.get<IDoctor, Doctor>(doctorId, doctorResource.transform);
       return doctor;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  public async getDoctorInfos(doctorId: string) {
-    try {
-      const doctorInfos = await db.doctor_info.findMany({
-        where: {
-          doctor_id: doctorId
-        }
-      });
-      return doctorInfos;
     } catch (error) {
       throw error;
     }
@@ -43,7 +31,7 @@ export default class DoctorService extends BaseRepository<DbType> {
 
   public async createDoctor(data: Partial<IDoctor>, userId: string): Promise<IDoctor> {
     try {
-      const newDoctor = await this.create<IDoctorCreateDto, IDoctor>(
+      const newDoctor = await this.doctorRepo.create<IDoctorCreateDto, IDoctor>(
         {
           user_id: userId,
           biography: data.biography,
@@ -62,7 +50,7 @@ export default class DoctorService extends BaseRepository<DbType> {
 
   public async deleteDoctor(doctorId: string): Promise<IDoctor> {
     try {
-      const deletedDoctor = await this.delete<IDoctor>(doctorId, doctorResource.transform);
+      const deletedDoctor = await this.doctorRepo.delete<IDoctor>(doctorId, doctorResource.transform);
       return deletedDoctor;
     } catch (error) {
       throw error;
@@ -72,7 +60,7 @@ export default class DoctorService extends BaseRepository<DbType> {
   public async updateDoctor(doctorId: string, payload: Partial<IDoctor>): Promise<IDoctor> {
     try {
       const { biography, isActive, workExperience, phoneNumber, registrationId } = payload;
-      const updatedDoctor = await this.update<IDoctor, Doctor>(
+      const updatedDoctor = await this.doctorRepo.update<IDoctor, Doctor>(
         doctorId,
         {
           ...(isActive ? { isActive } : {}),
@@ -84,6 +72,15 @@ export default class DoctorService extends BaseRepository<DbType> {
         doctorResource.transform
       );
       return updatedDoctor;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getDoctorInfos(doctorId: string) {
+    try {
+      const doctorInfos = await this.doctorRepo.getDoctorInfos(doctorId);
+      return doctorInfos;
     } catch (error) {
       throw error;
     }
