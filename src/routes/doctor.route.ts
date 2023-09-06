@@ -10,7 +10,12 @@ doctorRouter.get("/doctors", DoctorController.getAllDoctors);
 doctorRouter.get("/doctors/:doctorId?", DoctorController.getDoctor);
 
 // Create a doctor
-doctorRouter.post("/doctor", DoctorController.createDoctor);
+
+//1. first create user then create a doctor from another source
+//2. directly create a doctor ..for that you have to create a user first then assign the user_id to the doctor
+doctorRouter.post("/doctor/:userId?", DoctorController.createDoctor);
+
+
 
 // Delete a doctor
 doctorRouter.delete("/doctors/:doctorId?", DoctorController.deleteDoctor);

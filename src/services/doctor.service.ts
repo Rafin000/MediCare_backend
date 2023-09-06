@@ -1,11 +1,13 @@
 import { Doctor } from "@prisma/client";
 import doctorCollection from "../transformer/doctor.transformer/doctor.collection";
 import doctorResource from "../transformer/doctor.transformer/doctor.resource";
-import { IDoctor, IDoctorCreateDto } from "../types";
+import { IDoctor, IDoctorCreateDto, IDoctorWithUserInfo } from "../types";
 import DoctorRepository from "../repository/doctor.repository";
+import UserRepository from "../repository/user.repository";
 
 export default class DoctorService {
   protected readonly doctorRepo: DoctorRepository
+  protected readonly userRepo: UserRepository
 
   constructor(){
     this.doctorRepo = new DoctorRepository()
@@ -29,8 +31,12 @@ export default class DoctorService {
     }
   }
 
-  public async createDoctor(data: Partial<IDoctor>, userId: string): Promise<IDoctor> {
+  public async createDoctor(data: Partial<IDoctorWithUserInfo>, userId?: string): Promise<IDoctor> {
     try {
+      if(!userId){
+       const newUser =  await this.userRepo.createUser(data);
+       userId = newUser.id
+      }
       const newDoctor = await this.doctorRepo.create<IDoctorCreateDto, IDoctor>(
         {
           user_id: userId,

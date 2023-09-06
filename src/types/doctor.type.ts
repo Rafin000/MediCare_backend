@@ -1,4 +1,5 @@
 import { JsonArray } from "@prisma/client/runtime/library"
+import { IUser } from "./user.type"
 
 export type IDoctor = {
   id: string,
@@ -9,6 +10,8 @@ export type IDoctor = {
   registrationId: string,
   workExperience: JsonArray | null
 }
+
+export type IDoctorWithUserInfo = IDoctor & IUser
 
 export type IDoctorCreateDto = {
   user_id: string | undefined,
