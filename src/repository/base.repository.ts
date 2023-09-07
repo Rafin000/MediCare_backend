@@ -1,5 +1,4 @@
 import { type Prisma } from "@prisma/client";
-import userCollection from "../transformer/user.transformer/user.collection";
 
 export default class BaseRepository<DatabaseType> {
   protected db: DatabaseType;
@@ -42,24 +41,12 @@ export default class BaseRepository<DatabaseType> {
     transform: (data: PrismaTableType) => FormattedDataType
   ): Promise<FormattedDataType> {
     try {
-      const user: PrismaTableType = await this.db[this.model].findUnique({
+      const data: PrismaTableType = await this.db[this.model].findUnique({
         where: {
           id: id,
         },
-        include: {
-          user_roles: {
-            include: {
-              role: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-            },
-          },
-        },
       })
-      return transform(user);
+      return transform(data);
     } catch (error) {
       throw error
     }
