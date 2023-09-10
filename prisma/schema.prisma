@@ -2,7 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+  binaryTargets   = ["native", "linux-musl-arm64-openssl-1.1.x"]
 }
 
 datasource db {
@@ -10,166 +12,230 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserType {
+view Doctor_Info {
+  user_id      String
+  doctor_id    String    @id @unique
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  first_name   String
+  last_name    String
+  username     String
+  email        String
+  phone_number String
+  dob          String
+  user_type    User_Type
+
+  // user_social  user_social[]
+  @@map("doctor_infos")
+}
+
+enum User_Type {
   user
   doctor
 }
 
-model users {
-  id           String        @id @unique @default(uuid())
-  firstName    String
-  lastName     String
-  userName     String
-  email        String        @unique
-  password     String
-  phone        String?
-  user_type    UserType
-  user_socials user_social[]
-  user_roles   user_role[]
-  dob          String?
+model User {
+  id             String      @id @unique @default(uuid())
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  first_name     String
+  last_name      String
+  username       String
+  email          String      @unique
+  password       String
+  phone_number   String?
+  user_type      User_Type   @default(user)
+  // user_socials user_social[]
+  user_roles     User_Role[]
+  doctor_profile Doctor?
+  dob            String?
+
+  @@map(name: "users")
 }
 
-model socials {
-  id              String            @id @unique @default(uuid())
-  name            String
-  description     String?
-  user_socials    user_social[]
-  hospital_social hospital_social[]
+// model Social {
+//   id              String            @id @unique @default(uuid())
+//   name            String
+//   description     String?
+//   user_socials    user_social[]
+//   hospital_social hospital_social[]
+
+//   @@map(name: "socials")
+// }
+
+// model user_social {
+//   user                   User         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+//   social                 Social       @relation(fields: [social_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+//   user_id                String
+//   social_id              String
+//   doctor_info            doctor_info? @relation(fields: [doctors_infosUser_id, doctors_infosDoctor_id], references: [user_id, doctor_id])
+//   doctor_infoUser_id   String?
+//   doctors_infosDoctor_id String?
+
+//   @@id([user_id, social_id])
+// }
+
+model Hospital_Social {
+  hospital    Hospital @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospital_id String
+  // social      Social   @relation(fields: [social_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  social_id   String
+
+  @@id([hospital_id, social_id])
+  @@map("hospital_socials")
 }
 
-model user_social {
-  user     users   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  social   socials @relation(fields: [socialId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId   String
-  socialId String
-
-  @@id([userId, socialId])
-}
-
-model hospital_social {
-  hospital   hospitals @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  hospitalId String
-  social     socials   @relation(fields: [socialId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  socialId   String
-
-  @@id([hospitalId, socialId])
-}
-
-model roles {
+model Role {
   id          String      @id @unique @default(uuid())
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
   name        String
   description String?
-  user_roles  user_role[]
+  user_roles  User_Role[]
+
+  @@map(name: "roles")
 }
 
-model user_role {
-  user   users  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  role   roles  @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
-  roleId String
+model User_Role {
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String
+  role_id String
 
-  @@id([userId, roleId])
+  @@id([user_id, role_id])
+  @@map("user_roles")
 }
 
-model hospitals {
+model Hospital {
   id                   String                @id @unique @default(uuid())
+  created_at           DateTime              @default(now())
+  updated_at           DateTime              @updatedAt
   name                 String
   type                 String
-  phone                String?
+  phone_number         String?
   email                String                @unique
   fax                  String?
   clinic_hour          String?
   lab_hour             String?
   description          String?
   registration_id      String
-  hospital_social      hospital_social[]
-  hospital_doctors     hospital_doctor[]
-  hospital_treatments  hospital_treatment[]
-  hospital_departments hospital_department[]
-  hospital_locations   hospital_location[]
+  hospital_social      Hospital_Social[]
+  hospital_doctors     Hospital_Doctor[]
+  hospital_treatments  Hospital_Treatment[]
+  hospital_departments Hospital_Department[]
+  hospital_locations   Hospital_Location[]
+
+  @@map(name: "hospitals")
 }
 
-model hospital_doctor {
-  hospital   hospitals @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  hospitalId String
-  doctor     doctors   @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  doctorId   String
+model Hospital_Doctor {
+  hospital    Hospital @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospital_id String
+  doctor      Doctor   @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctor_id   String
 
-  @@id([hospitalId, doctorId])
+  @@id([hospital_id, doctor_id])
+  @@map("hospital_doctors")
 }
 
-model doctors {
+model Doctor {
   id                     String                  @id @unique @default(uuid())
+  created_at             DateTime                @default(now())
+  updated_at             DateTime                @updatedAt
+  user                   User                    @relation(fields: [user_id], references: [id])
+  user_id                String                  @unique
   phone_number           String?
   biography              String?
-  chamber_location       String?
   is_active              Boolean
-  work_experience        String?
+  work_experience        Json?
   registration_id        String                  @unique
-  hospital_doctors       hospital_doctor[]
-  doctor_specializations doctor_specialization[]
-  doctor_awards          doctor_award[]
-  doctor_degrees         doctor_degree[]
-  doctor_locations       doctor_location[]
+  hospital_doctors       Hospital_Doctor[]
+  doctor_specializations Doctor_Specialization[]
+  doctor_awards          Doctor_Award[]
+  doctor_degrees         Doctor_Degree[]
+  doctor_locations       Doctor_Location[]
+
+  @@map(name: "doctors")
 }
 
-model blogs {
+model Blog {
   id              String          @id @unique @default(uuid())
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
   title           String
   Description     String?
-  blog_categories blog_category[]
+  blog_categories Blog_Category[]
+
+  @@map(name: "blogs")
 }
 
-model blog_category {
-  blog       blogs      @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  blogId     String
-  category   categories @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  categoryId String
+model Blog_Category {
+  blog        Blog     @relation(fields: [blog_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  blog_id     String
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category_id String
 
-  @@id([blogId, categoryId])
+  @@id([blog_id, category_id])
+  @@map("blog_categories")
 }
 
-model categories {
+model Category {
   id              String          @id @unique @default(uuid())
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
   name            String
   description     String?
-  blog_categories blog_category[]
+  blog_categories Blog_Category[]
+
+  @@map(name: "categories")
 }
 
-model treatments {
+model Treatment {
   id                  String               @id @unique @default(uuid())
+  created_at          DateTime             @default(now())
+  updated_at          DateTime             @updatedAt
   type                String
   description         String?
-  hospital_treatments hospital_treatment[]
+  hospital_treatments Hospital_Treatment[]
+
+  @@map(name: "treatments")
 }
 
-model hospital_treatment {
-  treatment   treatments @relation(fields: [treatmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  treatmentId String
-  hospital    hospitals  @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  hospitalId  String
+model Hospital_Treatment {
+  treatment    Treatment @relation(fields: [treatment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  treatment_id String
+  hospital     Hospital  @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospital_id  String
 
-  @@id([hospitalId, treatmentId])
+  @@id([hospital_id, treatment_id])
+  @@map("hospital_treatments")
 }
 
-model departments {
+model Department {
   id                   String                @id @unique @default(uuid())
+  created_at           DateTime              @default(now())
+  updated_at           DateTime              @updatedAt
   name                 String
   description          String?
-  hospital_departments hospital_department[]
+  hospital_departments Hospital_Department[]
+
+  @@map(name: "departments")
 }
 
-model hospital_department {
-  department   departments @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  departmentId String
-  hospital     hospitals   @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  hospitalId   String
+model Hospital_Department {
+  department    Department @relation(fields: [department_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  department_id String
+  hospital      Hospital   @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospital_id   String
 
-  @@id([hospitalId, departmentId])
+  @@id([hospital_id, department_id])
+  @@map("hospital_departments")
 }
 
-model locations {
+model Location {
   id                 String              @id @unique @default(uuid())
+  created_at         DateTime            @default(now())
+  updated_at         DateTime            @updatedAt
   longitude          String
   latitude           String
   street             String?
@@ -177,75 +243,94 @@ model locations {
   country            String?
   division           String?
   district           String?
-  thanan             String?
-  hospital_locations hospital_location[]
-  doctor_locations   doctor_location[]
+  thana              String?
+  hospital_locations Hospital_Location[]
+  doctor_locations   Doctor_Location[]
+
+  @@map(name: "locations")
 }
 
-model doctor_location {
+model Doctor_Location {
   visiting_hour String
   visiting_fee  String
-  doctor        doctors   @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  doctorId      String
-  location      locations @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  locationId    String
+  doctor        Doctor   @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctor_id     String
+  location      Location @relation(fields: [location_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  location_id   String
 
-  @@id([doctorId, locationId])
+  @@id([doctor_id, location_id])
+  @@map("doctor_locations")
 }
 
-model hospital_location {
-  location   locations @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  locationId String
-  hospital   hospitals @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  hospitalId String
+model Hospital_Location {
+  location    Location @relation(fields: [location_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  location_id String
+  hospital    Hospital @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hospital_id String
 
-  @@id([hospitalId, locationId])
+  @@id([hospital_id, location_id])
+  @@map("hospital_locations")
 }
 
-model specializations {
+model Specialization {
   id                     String                  @id @unique @default(uuid())
+  created_at             DateTime                @default(now())
+  updated_at             DateTime                @updatedAt
   name                   String
   description            String?
-  doctor_specializations doctor_specialization[]
+  doctor_specializations Doctor_Specialization[]
+
+  @@map(name: "specializations")
 }
 
-model doctor_specialization {
-  specialization   specializations @relation(fields: [specializationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  specializationId String
-  doctor           doctors         @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  doctorId         String
+model Doctor_Specialization {
+  specialization    Specialization @relation(fields: [specialization_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  specialization_id String
+  doctor            Doctor         @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctor_id         String
 
-  @@id([doctorId, specializationId])
+  @@id([doctor_id, specialization_id])
+  @@map("doctor_specializations")
 }
 
-model awards {
+model Award {
   id            String         @id @unique @default(uuid())
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
   name          String
   description   String?
-  doctor_awards doctor_award[]
+  doctor_awards Doctor_Award[]
+
+  @@map(name: "awards")
 }
 
-model doctor_award {
-  award    awards  @relation(fields: [awardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  awardId  String
-  doctor   doctors @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  doctorId String
+model Doctor_Award {
+  award     Award  @relation(fields: [award_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  award_id  String
+  doctor    Doctor @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctor_id String
 
-  @@id([doctorId, awardId])
+  @@id([doctor_id, award_id])
+  @@map("doctor_awards")
 }
 
-model degrees {
+model Degree {
   id             String          @id @unique @default(uuid())
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
   name           String
   description    String?
-  doctor_degrees doctor_degree[]
+  doctor_degrees Doctor_Degree[]
+
+  @@map(name: "degrees")
 }
 
-model doctor_degree {
-  degree   degrees @relation(fields: [degreeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  degreeId String
-  doctor   doctors @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  doctorId String
+model Doctor_Degree {
+  degree    Degree @relation(fields: [degree_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  degree_id String
+  doctor    Doctor @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctor_id String
 
-  @@id([doctorId, degreeId])
+  @@id([doctor_id, degree_id])
+  @@map("doctor_degrees")
 }

@@ -1,9 +1,11 @@
-export interface IRole {
+export type IRole = {
   name: string,
   description: string | null
   id: string
 }
 
-export interface IRoleUpdateDto extends Partial<IRole> {
 
+export type IRoleCreateDto = {
+  name: string,
+  description: string | null
 }

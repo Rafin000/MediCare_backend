@@ -1,0 +1,45 @@
+version: "3"
+services:
+
+  medion-app:
+    build:
+      context: .
+      args:
+        NODE_ENV: development
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - ./.env
+
+    command: yarn dev
+
+  mariadb:
+    image: mariadb:10.6
+    container_name: medion-mariadb
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - app-mariadb:/var/lib/mysql  # Define the volume here
+    networks:
+      - app
+    restart: on-failure
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
+      retries: 3
+      timeout: 5s
+
+volumes:
+  app-mariadb: 
+    driver: local  
+networks:
+  app:
+    name: app
+    driver: bridge
+    external: false
