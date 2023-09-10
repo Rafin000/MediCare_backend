@@ -1,19 +1,18 @@
 import { Department } from "@prisma/client";
+import { DbType, db } from "../db.server";
 import departmentCollection from "../transformer/department.transformer/department.collection";
 import departmentResource from "../transformer/department.transformer/department.resource";
 import { IDepartment, IDepartmentCreateDto } from "../types";
-import DepartmentRepository from "../repository/department.repository";
+import BaseRepository from "./base.repository";
 
-export default class DepartmentService {
-  protected readonly departmentRepository: DepartmentRepository;
-
+export default class DepartmentRepository extends BaseRepository<DbType>{
   constructor() {
-    this.departmentRepository = new DepartmentRepository();
+    super(db, 'Department')
   }
 
   public async getAllDepartments(): Promise<IDepartment[]> {
     try {
-      const allDepartments = await this.departmentRepository.getAllDepartments();
+      const allDepartments = await this.getAll<IDepartment, Department>(departmentCollection.transformCollection);
       return allDepartments;
     } catch (error) {
       throw error;
@@ -22,7 +21,7 @@ export default class DepartmentService {
 
   public async getDepartment(departmentId: string): Promise<IDepartment> {
     try {
-      const department = await this.departmentRepository.getDepartment(departmentId);
+      const department = await this.get<IDepartment, Department>(departmentId, departmentResource.transform);
       return department;
     } catch (error) {
       throw error;
@@ -31,7 +30,13 @@ export default class DepartmentService {
 
   public async createDepartment(data: IDepartmentCreateDto): Promise<IDepartment> {
     try {
-      const newDepartment = await this.departmentRepository.createDepartment(data);
+      const newDepartment = await this.create<IDepartment, Department>(
+        {
+          name: data.name,
+          description: data.description
+        },
+        departmentResource.transform
+      );
       return newDepartment;
     } catch (error) {
       throw error;
@@ -40,7 +45,7 @@ export default class DepartmentService {
 
   public async deleteDepartment(departmentId: string): Promise<IDepartment> {
     try {
-      const deletedDepartment = await this.departmentRepository.deleteDepartment(departmentId);
+      const deletedDepartment = await this.delete<IDepartment>(departmentId, departmentResource.transform);
       return deletedDepartment;
     } catch (error) {
       throw error;
@@ -49,7 +54,15 @@ export default class DepartmentService {
 
   public async updateDepartment(departmentId: string, payload: Partial<IDepartment>): Promise<IDepartment> {
     try {
-      const updatedDepartment = await this.departmentRepository.updateDepartment(departmentId, payload)
+      const { name, description } = payload;
+      const updatedDepartment = await this.update<IDepartment, Department>(
+        departmentId,
+        {
+          ...(name ? { name } : {}),
+          ...(description ? { description } : {}),
+        },
+        departmentResource.transform
+      );
       return updatedDepartment;
     } catch (error) {
       throw error;

@@ -1,18 +1,16 @@
-import { Location } from "@prisma/client";
-import { DbType, db } from "../db.server";
-import BaseRepository from "../repository/base.repository";
-import locationCollection from "../transformer/location.transformer/location.collection";
-import locationResource from "../transformer/location.transformer/location.resource";
 import { ILocation, ILocationCreateDto } from "../types";
+import LocationRepository from "../repository/location.repository";
 
-export default class LocationService extends BaseRepository<DbType> {
+export default class LocationService {
+  protected readonly locationRepository: LocationRepository;
+
   constructor() {
-    super(db, 'Location');
+    this.locationRepository = new LocationRepository();
   }
 
   public async getAllLocations(): Promise<ILocation[]> {
     try {
-      const allLocations = await this.getAll<ILocation, Location>(locationCollection.transformCollection);
+      const allLocations = await this.locationRepository.getAllLocations();
       return allLocations;
     } catch (error) {
       throw error;
@@ -21,7 +19,7 @@ export default class LocationService extends BaseRepository<DbType> {
 
   public async getLocation(locationId: string): Promise<ILocation> {
     try {
-      const location = await this.get<ILocation, Location>(locationId, locationResource.transform);
+      const location = await this.locationRepository.getLocation(locationId)
       return location;
     } catch (error) {
       throw error;
@@ -30,19 +28,7 @@ export default class LocationService extends BaseRepository<DbType> {
 
   public async createLocation(data: ILocationCreateDto): Promise<ILocation> {
     try {
-      const newLocation = await this.create<ILocation, Location>(
-        {
-          latitude: data.latitude,
-          longitude: data.longitude,
-          address: data.address,
-          street: data.street,
-          district: data.district,
-          division: data.division,
-          thana: data.thana,
-          country: data.country
-        },
-        locationResource.transform
-      );
+      const newLocation = await this.locationRepository.createLocation(data)
       return newLocation;
     } catch (error) {
       throw error;
@@ -51,7 +37,7 @@ export default class LocationService extends BaseRepository<DbType> {
 
   public async deleteLocation(locationId: string): Promise<ILocation> {
     try {
-      const deletedLocation = await this.delete<ILocation>(locationId, locationResource.transform);
+      const deletedLocation = await this.locationRepository.deleteLocation(locationId)
       return deletedLocation;
     } catch (error) {
       throw error;
@@ -60,21 +46,7 @@ export default class LocationService extends BaseRepository<DbType> {
 
   public async updateLocation(locationId: string, payload: Partial<ILocation>): Promise<ILocation> {
     try {
-      const { latitude, longitude, country, address, thana, district, division, street } = payload;
-      const updatedLocation = await this.update<ILocation, Location>(
-        locationId,
-        {
-          ...(latitude ? { latitude } : {}),
-          ...(longitude ? { longitude } : {}),
-          ...(country ? { country } : {}),
-          ...(address ? { address } : {}),
-          ...(thana ? { thana } : {}),
-          ...(district ? { district } : {}),
-          ...(division ? { division } : {}),
-          ...(street ? { street } : {}),
-        },
-        locationResource.transform
-      );
+      const updatedLocation = await this.locationRepository.updateLocation(locationId, payload)
       return updatedLocation;
     } catch (error) {
       throw error;
