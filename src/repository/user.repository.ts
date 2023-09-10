@@ -98,21 +98,5 @@ export default class UserRepository extends BaseRepository<DbType> {
       throw error;
     }
   }
-
-  public async getAllUserRoles(userId: string) {
-    try {
-      const userRoles = await db.user_Role.findMany({
-        where: {
-          user_id: userId,
-        },
-        select: {
-          role: true,
-        },
-      });
-      return userRoles;
-    } catch (error) {
-      return null;
-    }
-  }
 }
 

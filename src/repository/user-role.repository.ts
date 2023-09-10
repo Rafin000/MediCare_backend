@@ -47,5 +47,21 @@ export default class UserRoleRepository {
       throw new ApiError(httpStatus.BAD_REQUEST, "No Such Entries");
     }
   }
+
+  public async getAllUserRoles(userId: string) {
+    try {
+      const userRoles = await db.user_Role.findMany({
+        where: {
+          user_id: userId,
+        },
+        select: {
+          role: true,
+        },
+      });
+      return userRoles;
+    } catch (error) {
+      return null;
+    }
+  }
 }
 

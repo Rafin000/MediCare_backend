@@ -33,9 +33,9 @@ export default class UserService {
   }
 
 
-  public async deleteUser(id: string): Promise<IUser> {
+  public async deleteUser(userId: string): Promise<IUser> {
     try {
-      const user = await this.userRepository.delete<IUser>(id, userResource.transform);
+      const user = await this.userRepository.deleteUser(userId);
       return user;
     } catch (error) {
       throw error;
@@ -45,7 +45,7 @@ export default class UserService {
 
   public async getAllUsers(): Promise<IUser[]> {
     try {
-      const allUsers = await this.userRepository.getAll<IUser, User>(userCollection.transformCollection)
+      const allUsers = await this.userRepository.getAllUsers();
       return allUsers;
     } catch (error) {
       throw error;
@@ -54,7 +54,7 @@ export default class UserService {
 
   public async findUserBySpecificKey(specificKey: string, userId: string): Promise<IUser> | null {
     try {
-      const user = await this.userRepository.findUniqueBySpecificKey<User>(specificKey, userId)
+      const user = await this.userRepository.findUniqueBySpecificKey(specificKey, userId)
       return userResource.transform(user)
     } catch (err) {
       throw err;
@@ -63,16 +63,16 @@ export default class UserService {
 
   public async findUserById(userId: string): Promise<IUser> | null {
     try {
-      const user = await this.userRepository.findUniqueByKey<User>('id', userId)
+      const user = await this.userRepository.findUniqueByKey('id', userId)
       return userResource.transform(user)
     } catch (err) {
       throw err;
     }
   }
 
-  public async getUser(id: string): Promise<IUser> {
+  public async getUser(userId: string): Promise<IUser> {
     try {
-      const user = await this.userRepository.get<IUser, User>(id, userResource.transform)
+      const user = await this.userRepository.getUser(userId)
       return user;
     } catch (error) {
       throw error;
@@ -81,14 +81,7 @@ export default class UserService {
 
   public async getAllUserRoles(userId: string) {
     try {
-      const userRoles = await db.user_Role.findMany({
-        where: {
-          user_id: userId,
-        },
-        select: {
-          role: true,
-        },
-      });
+      const userRoles = await this.userRoleRepository.getAllUserRoles(userId)
       return userRoles;
     } catch (error) {
       return null;
@@ -97,7 +90,6 @@ export default class UserService {
 
   public async addOrRemoveUserRoles({ roleIds, userId }) {
     try {
-
       const userALLRolesIds = await this.userRoleRepository.findAllRolesByUserId(userId);
       const { itemsToBeAdded, itemsToBeDeleted } = itemDeletedAndAdded(
         userALLRolesIds,
