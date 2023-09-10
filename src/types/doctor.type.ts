@@ -11,7 +11,7 @@ export type IDoctor = {
   work_experience: JsonArray | null
 }
 
-export type IDoctorCreateWithUserInfoDto = IDoctorCreateDto & IUserCreateDto;
+// export type IDoctorCreateWithUserInfoDto = IDoctorCreateDto & IUserCreateDto;
 
 export type IDoctorCreateDto = {
   user_id?: string,

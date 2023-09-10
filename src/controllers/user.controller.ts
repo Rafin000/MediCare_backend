@@ -10,10 +10,9 @@ export default class UserController {
   static createUser = catchAsync(
     async (req: Request, res: Response) => {
       const payload = req.body as IUserCreateDto
-      console.log(payload)
       const userService = new UserService();
       const newUser: IUser = await userService.createUser(payload)
-      apiResponse.sendSuccess({ res: res, data: newUser, code: 201 })
+      apiResponse.sendSuccess({ res: res, data: newUser})
     }
   )
 
