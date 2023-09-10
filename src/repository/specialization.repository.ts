@@ -4,17 +4,15 @@ import BaseRepository from "../repository/base.repository";
 import specializationCollection from "../transformer/specialization.transformer/specialization.collection";
 import specializationResource from "../transformer/specialization.transformer/specialization.resource";
 import { ISpecialization, ISpecializationCreateDto } from "../types";
-import SpecializationRepository from "../repository/specialization.repository";
 
-export default class SpecializationService {
-  protected specializationRepository: SpecializationRepository;
+export default class SpecializationRepository extends BaseRepository<DbType> {
   constructor() {
-    this.specializationRepository = new SpecializationRepository();
+    super(db, 'Specialization');
   }
 
   public async getAllSpecializations(): Promise<ISpecialization[]> {
     try {
-      const allSpecializations = await this.specializationRepository.getAllSpecializations();
+      const allSpecializations = await this.getAll<ISpecialization, Specialization>(specializationCollection.transformCollection);
       return allSpecializations;
     } catch (error) {
       throw error;
@@ -23,7 +21,7 @@ export default class SpecializationService {
 
   public async getSpecialization(specializationId: string): Promise<ISpecialization> {
     try {
-      const specialization = await this.specializationRepository.getSpecialization(specializationId);
+      const specialization = await this.get<ISpecialization, Specialization>(specializationId, specializationResource.transform);
       return specialization;
     } catch (error) {
       throw error;
@@ -32,7 +30,13 @@ export default class SpecializationService {
 
   public async createSpecialization(data: ISpecializationCreateDto): Promise<ISpecialization> {
     try {
-      const newSpecialization = await this.specializationRepository.createSpecialization(data);
+      const newSpecialization = await this.create<ISpecialization, Specialization>(
+        {
+          name: data.name,
+          description: data.description
+        },
+        specializationResource.transform
+      );
       return newSpecialization;
     } catch (error) {
       throw error;
@@ -41,7 +45,7 @@ export default class SpecializationService {
 
   public async deleteSpecialization(specializationId: string): Promise<ISpecialization> {
     try {
-      const deletedSpecialization = await this.specializationRepository.deleteSpecialization(specializationId)
+      const deletedSpecialization = await this.delete<ISpecialization>(specializationId, specializationResource.transform);
       return deletedSpecialization;
     } catch (error) {
       throw error;
@@ -50,7 +54,16 @@ export default class SpecializationService {
 
   public async updateSpecialization(specializationId: string, payload: Partial<ISpecialization>): Promise<ISpecialization> {
     try {
-      const updatedSpecialization = await this.specializationRepository.updateSpecialization(specializationId, payload)
+      const { name, description } = payload;
+      const updatedSpecialization = await this.update<ISpecialization, Specialization>(
+        specializationId,
+        {
+          ...(name ? { name } : {}),
+          ...(description ? { description } : {}),
+
+        },
+        specializationResource.transform
+      );
       return updatedSpecialization;
     } catch (error) {
       throw error;

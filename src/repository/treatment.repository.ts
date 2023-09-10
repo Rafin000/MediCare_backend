@@ -4,18 +4,15 @@ import BaseRepository from "../repository/base.repository";
 import treatmentCollection from "../transformer/treatment.transformer/treatment.collection";
 import treatmentResource from "../transformer/treatment.transformer/treatment.resource";
 import { ITreatment, ITreatmentCreateDto } from "../types";
-import TreatmentRepository from "../repository/treatment.repository";
 
-export default class TreatmentService {
-  protected treatmentRepository: TreatmentRepository;
-
+export default class TreatmentRepository extends BaseRepository<DbType> {
   constructor() {
-    this.treatmentRepository = new TreatmentRepository();
+    super(db, 'Treatment');
   }
 
   public async getAllTreatments(): Promise<ITreatment[]> {
     try {
-      const allTreatments = await this.treatmentRepository.getAllTreatments();
+      const allTreatments = await this.getAll<ITreatment, Treatment>(treatmentCollection.transformCollection);
       return allTreatments;
     } catch (error) {
       throw error;
@@ -24,7 +21,7 @@ export default class TreatmentService {
 
   public async getTreatment(treatmentId: string): Promise<ITreatment> {
     try {
-      const treatment = await this.treatmentRepository.getTreatment(treatmentId);
+      const treatment = await this.get<ITreatment, Treatment>(treatmentId, treatmentResource.transform)
       return treatment
     } catch (error) {
       throw error
@@ -33,7 +30,13 @@ export default class TreatmentService {
 
   public async createTreatment(data: ITreatmentCreateDto): Promise<ITreatment> {
     try {
-      const newTreatment = await this.treatmentRepository.createTreatment(data);
+      const newTreatment = await this.create<ITreatment, Treatment>(
+        {
+          type: data.type,
+          description: data.description,
+        },
+        treatmentResource.transform
+      );
       return newTreatment;
     } catch (error) {
       throw error;
@@ -42,7 +45,7 @@ export default class TreatmentService {
 
   public async deleteTreatment(treatmentId: string): Promise<ITreatment> {
     try {
-      const deletedTreatment = await this.treatmentRepository.deleteTreatment(treatmentId);
+      const deletedTreatment = await this.delete<ITreatment>(treatmentId, treatmentResource.transform);
       return deletedTreatment;
     } catch (error) {
       throw error;
@@ -51,7 +54,15 @@ export default class TreatmentService {
 
   public async updateTreatment(treatmentId: string, payload: Partial<ITreatment>): Promise<ITreatment> {
     try {
-      const updatedTreatment = await this.treatmentRepository.updateTreatment(treatmentId, payload);
+      const { type, description } = payload;
+      const updatedTreatment = await this.update<ITreatment, Treatment>(
+        treatmentId,
+        {
+          ...(type ? { type } : {}),
+          ...(description ? { description } : {}),
+        },
+        treatmentResource.transform
+      );
       return updatedTreatment;
     } catch (error) {
       throw error;

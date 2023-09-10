@@ -17,8 +17,13 @@ export default class UserService {
   }
 
   public async createUser(data: IUserCreateDto): Promise<IUser> {
-    const newUser = await this.userRepository.createUser(data);
-    return newUser;
+    try {
+      const newUser = await this.userRepository.createUser(data);
+      return newUser;
+
+    } catch (error) {
+      throw error;
+    }
   }
 
 

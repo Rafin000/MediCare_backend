@@ -1,18 +1,15 @@
-import { Degree } from "@prisma/client";
-import { DbType, db } from "../db.server";
-import BaseRepository from "../repository/base.repository";
-import degreeCollection from "../transformer/degree.transformer/degree.collection";
-import degreeResource from "../transformer/degree.transformer/degree.resource";
 import { IDegree, IDegreeCreateDto } from "../types";
+import DegreeRepository from "../repository/degree.repository";
 
-export default class DegreeService extends BaseRepository<DbType> {
+export default class DegreeService {
+  protected degreeRepository: DegreeRepository;
   constructor() {
-    super(db, 'Degree');
+    this.degreeRepository = new DegreeRepository();
   }
 
   public async getAllDegrees(): Promise<IDegree[]> {
     try {
-      const allDegrees = await this.getAll<IDegree, Degree>(degreeCollection.transformCollection);
+      const allDegrees = await this.degreeRepository.getAllDegrees();
       return allDegrees;
     } catch (error) {
       throw error;
@@ -21,7 +18,7 @@ export default class DegreeService extends BaseRepository<DbType> {
 
   public async getDegree(degreeId: string): Promise<IDegree> {
     try {
-      const degree = await this.get<IDegree, Degree>(degreeId, degreeResource.transform);
+      const degree = await this.degreeRepository.getDegree(degreeId);
       return degree;
     } catch (error) {
       throw error;
@@ -30,13 +27,7 @@ export default class DegreeService extends BaseRepository<DbType> {
 
   public async createDegree(data: IDegreeCreateDto): Promise<IDegree> {
     try {
-      const newDegree = await this.create<IDegree, Degree>(
-        {
-          name: data.name,
-          description: data.description
-        },
-        degreeResource.transform
-      );
+      const newDegree = await this.degreeRepository.createDegree(data);
       return newDegree;
     } catch (error) {
       throw error;
@@ -45,7 +36,7 @@ export default class DegreeService extends BaseRepository<DbType> {
 
   public async deleteDegree(degreeId: string): Promise<IDegree> {
     try {
-      const deletedDegree = await this.delete<IDegree>(degreeId, degreeResource.transform);
+      const deletedDegree = await this.degreeRepository.deleteDegree(degreeId);
       return deletedDegree;
     } catch (error) {
       throw error;
@@ -54,15 +45,7 @@ export default class DegreeService extends BaseRepository<DbType> {
 
   public async updateDegree(degreeId: string, payload: Partial<IDegree>): Promise<IDegree> {
     try {
-      const { name, description } = payload;
-      const updatedDegree = await this.update<IDegree, Degree>(
-        degreeId,
-        {
-          ...(name ? { name } : {}),
-          ...(description ? { description } : {}),
-        },
-        degreeResource.transform
-      );
+      const updatedDegree = await this.degreeRepository.updateDegree(degreeId, payload)
       return updatedDegree;
     } catch (error) {
       throw error;
