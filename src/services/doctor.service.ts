@@ -31,7 +31,7 @@ export default class DoctorService {
     }
   }
 
-  public async createDoctor(data: IDoctorCreateDto): Promise<any> {
+  public async createDoctor(data: IDoctorCreateDto): Promise<IDoctor> {
     try {
       // if(!userId){
       //  const newUser =  await this.userRepository.createUser(data);

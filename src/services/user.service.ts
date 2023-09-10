@@ -17,24 +17,15 @@ export default class UserService {
   }
 
   public async createUser(data: IUserCreateDto): Promise<IUser> {
-      const newUser = await this.userRepository.createUser(data);
-      return newUser;
+    const newUser = await this.userRepository.createUser(data);
+    return newUser;
   }
 
 
   public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
     try {
-      const { email, first_name, last_name, phone_number } = payload;
-      const user = await this.userRepository.update<IUser, User>(
-        id,
-        {
-          ...(email ? { email } : {}),
-          ...(first_name ? { first_name } : {}),
-          ...(last_name ? { last_name } : {}),
-          ...(phone_number ? { phone_number } : {}),
-        },
-        userResource.transform
-      );
+
+      const user = await this.userRepository.updateUser(id, payload)
       return user;
     } catch (error) {
       throw error;

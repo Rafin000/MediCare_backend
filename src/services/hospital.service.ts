@@ -62,14 +62,14 @@ export default class HospitalService extends BaseRepository<DbType>{
 
   public async updateHospital(hospitalId: string, payload: Partial<IHospital>): Promise<IHospital> {
     try {
-      const { name, type, email, fax, phone, description, lab_hour, clinic_hour, registration_id } = payload;
+      const { name, type, email, fax, phone_number, description, lab_hour, clinic_hour, registration_id } = payload;
       const updatedHospital = await this.update<IHospital, Hospital>(
         hospitalId,
         {
           ...(name ? { name } : {}),
           ...(type ? { type } : {}),
           ...(email ? { email } : {}),
-          ...(phone ? { phone } : {}),
+          ...(phone_number ? { phone_number } : {}),
           ...(fax ? { fax } : {}),
           ...(clinic_hour ? { clinic_hour } : {}),
           ...(lab_hour ? { lab_hour } : {}),

@@ -3,7 +3,7 @@ export type IHospital = {
   registration_id: string,
   type: string,
   name: string,
-  phone: string | null,
+  phone_number: string | null,
   email: string,
   fax: string | null,
   clinic_hour: string | null,

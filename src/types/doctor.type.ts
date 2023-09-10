@@ -14,7 +14,7 @@ export type IDoctor = {
 export type IDoctorCreateWithUserInfoDto = IDoctorCreateDto & IUserCreateDto;
 
 export type IDoctorCreateDto = {
-  user_id: string | undefined,
+  user_id?: string,
   phone_number: string | null,
   biography: string | null,
   is_active: boolean,

@@ -10,7 +10,7 @@ class HospitalResource implements Transformer {
       name: hospital.name,
       type: hospital.type,
       registration_id: hospital.registrationId,
-      phone: hospital.phoneNumber,
+      phone_number: hospital.phoneNumber,
       email: hospital.email,
       fax: hospital.fax,
       clinic_hour: hospital.clinicHour,

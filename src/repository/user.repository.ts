@@ -35,14 +35,14 @@ export default class UserRepository extends BaseRepository<DbType> {
 
   public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
     try {
-      const { email, firstName, lastName, phone } = payload;
+      const { email, first_name, last_name, phone_number } = payload;
       const user = await this.update<IUser, User>(
         id,
         {
           ...(email ? { email } : {}),
-          ...(firstName ? { firstName } : {}),
-          ...(lastName ? { lastName } : {}),
-          ...(phone ? { phone } : {}),
+          ...(first_name ? { first_name } : {}),
+          ...(last_name ? { last_name } : {}),
+          ...(phone_number ? { phone_number } : {}),
         },
         userResource.transform
       );

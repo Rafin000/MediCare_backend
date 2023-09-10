@@ -10,7 +10,7 @@ export default class DoctorRepository extends BaseRepository<DbType> {
 
   public async getDoctorInfos(doctorId: string) {
     try {
-      const doctorInfos = await db.doctor_info.findMany({
+      const doctorInfos = await db.doctor_Info.findMany({
         where: {
           doctor_id: doctorId
         }

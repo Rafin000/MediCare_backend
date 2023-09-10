@@ -34,6 +34,7 @@ export default class DoctorController {
 
   static createDoctor = catchAsync(
     async (req: Request, res: Response) => {
+      console.log(req)
       const payload = req.body as IDoctorCreateDto;
       const doctorService = new DoctorService();
       const newDoctor: IDoctor = await doctorService.createDoctor(payload);
