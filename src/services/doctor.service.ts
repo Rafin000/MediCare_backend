@@ -41,7 +41,10 @@ export default class DoctorService {
         {
           user_id: data.user_id,
           is_active: data.is_active,
-          registration_id: data.registration_id
+          registration_id: data.registration_id,
+          phone_number: data.phone_number,
+          biography: data.biography,
+          work_experience:data.work_experience
         },
         doctorResource.transform
       );
