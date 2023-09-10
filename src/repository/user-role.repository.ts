@@ -6,7 +6,7 @@ export default class UserRoleRepository {
   public async findAllRolesByUserId(userId: string): Promise<string[]> {
     try {
       const userAllRoles = (
-        await db.user_role.findMany({
+        await db.user_Role.findMany({
           where: {
             user_id: userId,
           },
@@ -20,7 +20,7 @@ export default class UserRoleRepository {
 
   public async bulkAdd(roleIds: string[], userId: string) {
     try {
-      await db.user_role.createMany({
+      await db.user_Role.createMany({
         data: roleIds.map((i) => {
           return {
             user_id: userId,
@@ -35,7 +35,7 @@ export default class UserRoleRepository {
 
   public async bulkDelete(roleIds: string[], userId: string) {
     try {
-      await db.user_role.deleteMany({
+      await db.user_Role.deleteMany({
         where: {
           user_id: userId,
           role_id: {

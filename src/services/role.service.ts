@@ -11,9 +11,9 @@ export default class RoleService extends BaseRepository<DbType> {
   constructor() {
     super(db, 'Role')
   }
-  public async createRole({ roleData }: { roleData: IRole }): Promise<IRole> {
+  public async createRole({ roleData }: { roleData: IRoleCreateDto }): Promise<IRole> {
     try {
-      const newRole = await this.create<IRoleCreateDto, IRole>(
+      const newRole = await this.create<IRole, Role>(
         {
           name: roleData.name,
           description: roleData.description,

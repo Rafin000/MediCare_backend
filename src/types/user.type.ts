@@ -10,13 +10,13 @@ enum IUserType {
 
 export type IUser = {
   id: string
-  firstName: string
-  lastName: string
-  userName: string
+  first_name: string
+  last_name: string
+  username: string
   email: string
   password: string
-  phone: string | null
-  userType: IUserType | undefined
+  phone_number: string | null
+  user_type: IUserType | undefined
   dob: string | null
   roles?: IRole[],
   // socials?: ISocial[]

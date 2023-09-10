@@ -28,9 +28,9 @@ export default class AwardService extends BaseRepository<DbType> {
     }
   }
 
-  public async createAward(data: Partial<IAward>): Promise<IAward> {
+  public async createAward(data: IAwardCreateDto): Promise<IAward> {
     try {
-      const newAward = await this.create<IAwardCreateDto, IAward>(
+      const newAward = await this.create<IAward, Award>(
         {
           name: data.name,
           description: data.description

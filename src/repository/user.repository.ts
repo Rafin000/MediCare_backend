@@ -10,19 +10,19 @@ export default class UserRepository extends BaseRepository<DbType> {
     super(db, 'User')
   }
 
-  public async createUser(data: Partial<IUser>): Promise<IUser> {
+  public async createUser(data: IUserCreateDto): Promise<IUser> {
     try {
 
-      const newUser = await this.create<IUserCreateDto, IUser>(
+      const newUser = await this.create<IUser, User>(
         {
-          first_name: data.firstName,
-          last_name: data.lastName,
+          first_name: data.first_name,
+          last_name: data.last_name,
           email: data.email,
           password: data.password,
-          username: data.userName,
+          username: data.username,
           dob: data.dob,
-          phone_number: data.phone,
-          user_type: data.userType,
+          phone_number: data.phone_number,
+          user_type: data.user_type,
         },
         userResource.transform
       );
@@ -101,7 +101,7 @@ export default class UserRepository extends BaseRepository<DbType> {
 
   public async getAllUserRoles(userId: string) {
     try {
-      const userRoles = await db.user_role.findMany({
+      const userRoles = await db.user_Role.findMany({
         where: {
           user_id: userId,
         },

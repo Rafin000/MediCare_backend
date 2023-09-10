@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { Request } from '../types'
-import { IUser } from "../types/user.type";
+import { IUser, IUserCreateDto } from "../types/user.type";
 import catchAsync from "../utils/catchAsync";
 import apiResponse from "../services/apiResponse.service";
 import { IUserAddOrRemoveRolesPayload } from "../types/user.type";
@@ -9,7 +9,8 @@ import UserService from "../services/user.service";
 export default class UserController {
   static createUser = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as IUser
+      const payload = req.body as IUserCreateDto
+      console.log(payload)
       const userService = new UserService();
       const newUser: IUser = await userService.createUser(payload)
       apiResponse.sendSuccess({ res: res, data: newUser, code: 201 })

@@ -4,7 +4,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["views"]
-  binaryTargets = ["native", "linux-musl-arm64-openssl-1.1.x"]
+  binaryTargets   = ["native", "linux-musl-arm64-openssl-1.1.x"]
 }
 
 datasource db {
@@ -12,40 +12,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-view doctor_info {
+view Doctor_Info {
   user_id      String
-  doctor_id    String   @id @unique
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  doctor_id    String    @id @unique
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
   first_name   String
   last_name    String
   username     String
   email        String
   phone_number String
   dob          String
-  user_type    UserType
+  user_type    User_Type
+
   // user_social  user_social[]
+  @@map("doctor_infos")
 }
 
-enum UserType {
+enum User_Type {
   user
   doctor
 }
 
 model User {
-  id           String      @id @unique @default(uuid())
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt
-  first_name   String
-  last_name    String
-  username     String
-  email        String      @unique
-  password     String
-  phone_number String?
-  user_type    UserType    @default(user)
+  id             String      @id @unique @default(uuid())
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  first_name     String
+  last_name      String
+  username       String
+  email          String      @unique
+  password       String
+  phone_number   String?
+  user_type      User_Type   @default(user)
   // user_socials user_social[]
-  user_roles   user_role[]
-  doctor_profile Doctor?  
+  user_roles     User_Role[]
+  doctor_profile Doctor?
   dob            String?
 
   @@map(name: "users")
@@ -73,13 +75,14 @@ model User {
 //   @@id([user_id, social_id])
 // }
 
-model hospital_social {
+model Hospital_Social {
   hospital    Hospital @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hospital_id String
   // social      Social   @relation(fields: [social_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   social_id   String
 
   @@id([hospital_id, social_id])
+  @@map("hospital_socials")
 }
 
 model Role {
@@ -88,18 +91,19 @@ model Role {
   updated_at  DateTime    @updatedAt
   name        String
   description String?
-  user_roles  user_role[]
+  user_roles  User_Role[]
 
   @@map(name: "roles")
 }
 
-model user_role {
+model User_Role {
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String
   role_id String
 
   @@id([user_id, role_id])
+  @@map("user_roles")
 }
 
 model Hospital {
@@ -115,22 +119,23 @@ model Hospital {
   lab_hour             String?
   description          String?
   registration_id      String
-  hospital_social      hospital_social[]
-  hospital_doctors     hospital_doctor[]
-  hospital_treatments  hospital_treatment[]
-  hospital_departments hospital_department[]
-  hospital_locations   hospital_location[]
+  hospital_social      Hospital_Social[]
+  hospital_doctors     Hospital_Doctor[]
+  hospital_treatments  Hospital_Treatment[]
+  hospital_departments Hospital_Department[]
+  hospital_locations   Hospital_Location[]
 
   @@map(name: "hospitals")
 }
 
-model hospital_doctor {
+model Hospital_Doctor {
   hospital    Hospital @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hospital_id String
   doctor      Doctor   @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   doctor_id   String
 
   @@id([hospital_id, doctor_id])
+  @@map("hospital_doctors")
 }
 
 model Doctor {
@@ -144,11 +149,11 @@ model Doctor {
   is_active              Boolean
   work_experience        Json?
   registration_id        String                  @unique
-  hospital_doctors       hospital_doctor[]
-  doctor_specializations doctor_specialization[]
-  doctor_awards          doctor_award[]
-  doctor_degrees         doctor_degree[]
-  doctor_locations       doctor_location[]
+  hospital_doctors       Hospital_Doctor[]
+  doctor_specializations Doctor_Specialization[]
+  doctor_awards          Doctor_Award[]
+  doctor_degrees         Doctor_Degree[]
+  doctor_locations       Doctor_Location[]
 
   @@map(name: "doctors")
 }
@@ -159,18 +164,19 @@ model Blog {
   updated_at      DateTime        @updatedAt
   title           String
   Description     String?
-  blog_categories blog_category[]
+  blog_categories Blog_Category[]
 
   @@map(name: "blogs")
 }
 
-model blog_category {
+model Blog_Category {
   blog        Blog     @relation(fields: [blog_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   blog_id     String
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   category_id String
 
   @@id([blog_id, category_id])
+  @@map("blog_categories")
 }
 
 model Category {
@@ -179,7 +185,7 @@ model Category {
   updated_at      DateTime        @updatedAt
   name            String
   description     String?
-  blog_categories blog_category[]
+  blog_categories Blog_Category[]
 
   @@map(name: "categories")
 }
@@ -190,18 +196,19 @@ model Treatment {
   updated_at          DateTime             @updatedAt
   type                String
   description         String?
-  hospital_treatments hospital_treatment[]
+  hospital_treatments Hospital_Treatment[]
 
   @@map(name: "treatments")
 }
 
-model hospital_treatment {
+model Hospital_Treatment {
   treatment    Treatment @relation(fields: [treatment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   treatment_id String
   hospital     Hospital  @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hospital_id  String
 
   @@id([hospital_id, treatment_id])
+  @@map("hospital_treatments")
 }
 
 model Department {
@@ -210,18 +217,19 @@ model Department {
   updated_at           DateTime              @updatedAt
   name                 String
   description          String?
-  hospital_departments hospital_department[]
+  hospital_departments Hospital_Department[]
 
   @@map(name: "departments")
 }
 
-model hospital_department {
+model Hospital_Department {
   department    Department @relation(fields: [department_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   department_id String
   hospital      Hospital   @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hospital_id   String
 
   @@id([hospital_id, department_id])
+  @@map("hospital_departments")
 }
 
 model Location {
@@ -236,13 +244,13 @@ model Location {
   division           String?
   district           String?
   thana              String?
-  hospital_locations hospital_location[]
-  doctor_locations   doctor_location[]
+  hospital_locations Hospital_Location[]
+  doctor_locations   Doctor_Location[]
 
   @@map(name: "locations")
 }
 
-model doctor_location {
+model Doctor_Location {
   visiting_hour String
   visiting_fee  String
   doctor        Doctor   @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -251,15 +259,17 @@ model doctor_location {
   location_id   String
 
   @@id([doctor_id, location_id])
+  @@map("doctor_locations")
 }
 
-model hospital_location {
+model Hospital_Location {
   location    Location @relation(fields: [location_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   location_id String
   hospital    Hospital @relation(fields: [hospital_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hospital_id String
 
   @@id([hospital_id, location_id])
+  @@map("hospital_locations")
 }
 
 model Specialization {
@@ -268,18 +278,19 @@ model Specialization {
   updated_at             DateTime                @updatedAt
   name                   String
   description            String?
-  doctor_specializations doctor_specialization[]
+  doctor_specializations Doctor_Specialization[]
 
   @@map(name: "specializations")
 }
 
-model doctor_specialization {
+model Doctor_Specialization {
   specialization    Specialization @relation(fields: [specialization_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   specialization_id String
   doctor            Doctor         @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   doctor_id         String
 
   @@id([doctor_id, specialization_id])
+  @@map("doctor_specializations")
 }
 
 model Award {
@@ -288,18 +299,19 @@ model Award {
   updated_at    DateTime       @updatedAt
   name          String
   description   String?
-  doctor_awards doctor_award[]
+  doctor_awards Doctor_Award[]
 
   @@map(name: "awards")
 }
 
-model doctor_award {
+model Doctor_Award {
   award     Award  @relation(fields: [award_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   award_id  String
   doctor    Doctor @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   doctor_id String
 
   @@id([doctor_id, award_id])
+  @@map("doctor_awards")
 }
 
 model Degree {
@@ -308,16 +320,17 @@ model Degree {
   updated_at     DateTime        @updatedAt
   name           String
   description    String?
-  doctor_degrees doctor_degree[]
+  doctor_degrees Doctor_Degree[]
 
   @@map(name: "degrees")
 }
 
-model doctor_degree {
+model Doctor_Degree {
   degree    Degree @relation(fields: [degree_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   degree_id String
   doctor    Doctor @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   doctor_id String
 
   @@id([doctor_id, degree_id])
+  @@map("doctor_degrees")
 }

@@ -4,7 +4,7 @@ import RoleController from "../controllers/role.controller";
 const roleRouter = Router()
 //get all roles
 roleRouter.get(
-  "/roles",
+  "/roles/all",
   RoleController.getAllRoles
 )
 

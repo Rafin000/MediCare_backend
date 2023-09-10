@@ -28,9 +28,9 @@ export default class TreatmentService extends BaseRepository<DbType> {
     }
   }
 
-  public async createTreatment(data: Partial<ITreatment>): Promise<ITreatment> {
+  public async createTreatment(data: ITreatmentCreateDto): Promise<ITreatment> {
     try {
-      const newTreatment = await this.create<ITreatmentCreateDto, ITreatment>(
+      const newTreatment = await this.create<ITreatment, Treatment>(
         {
           type: data.type,
           description: data.description,

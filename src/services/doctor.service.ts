@@ -1,21 +1,21 @@
 import { Doctor } from "@prisma/client";
 import doctorCollection from "../transformer/doctor.transformer/doctor.collection";
 import doctorResource from "../transformer/doctor.transformer/doctor.resource";
-import { IDoctor, IDoctorCreateDto, IDoctorWithUserInfo } from "../types";
+import { IDoctor, IDoctorCreateDto } from "../types";
 import DoctorRepository from "../repository/doctor.repository";
 import UserRepository from "../repository/user.repository";
 
 export default class DoctorService {
-  protected readonly doctorRepo: DoctorRepository
-  protected readonly userRepo: UserRepository
+  protected readonly doctorRepository: DoctorRepository
+  protected readonly userRepository: UserRepository
 
-  constructor(){
-    this.doctorRepo = new DoctorRepository()
+  constructor() {
+    this.doctorRepository = new DoctorRepository()
   }
 
   public async getAllDoctors(): Promise<IDoctor[]> {
     try {
-      const allDoctors = await this.doctorRepo.getAll<IDoctor, Doctor>(doctorCollection.transformCollection);
+      const allDoctors = await this.doctorRepository.getAll<IDoctor, Doctor>(doctorCollection.transformCollection);
       return allDoctors;
     } catch (error) {
       throw error;
@@ -24,27 +24,24 @@ export default class DoctorService {
 
   public async getDoctor(doctorId: string): Promise<IDoctor> {
     try {
-      const doctor = await this.doctorRepo.get<IDoctor, Doctor>(doctorId, doctorResource.transform);
+      const doctor = await this.doctorRepository.get<IDoctor, Doctor>(doctorId, doctorResource.transform);
       return doctor;
     } catch (error) {
       throw error;
     }
   }
 
-  public async createDoctor(data: Partial<IDoctorWithUserInfo>, userId?: string): Promise<IDoctor> {
+  public async createDoctor(data: IDoctorCreateDto): Promise<any> {
     try {
-      if(!userId){
-       const newUser =  await this.userRepo.createUser(data);
-       userId = newUser.id
-      }
-      const newDoctor = await this.doctorRepo.create<IDoctorCreateDto, IDoctor>(
+      // if(!userId){
+      //  const newUser =  await this.userRepository.createUser(data);
+      //  userId = newUser.id
+      // }
+      const newDoctor = await this.doctorRepository.create<IDoctor, Doctor>(
         {
-          user_id: userId,
-          biography: data.biography,
-          phone_number: data.phoneNumber,
-          registration_id: data.registrationId,
-          is_active: data.isActive,
-          work_experience: data.workExperience
+          user_id: data.user_id,
+          is_active: data.is_active,
+          registration_id: data.registration_id
         },
         doctorResource.transform
       );
@@ -53,10 +50,9 @@ export default class DoctorService {
       throw error;
     }
   }
-
   public async deleteDoctor(doctorId: string): Promise<IDoctor> {
     try {
-      const deletedDoctor = await this.doctorRepo.delete<IDoctor>(doctorId, doctorResource.transform);
+      const deletedDoctor = await this.doctorRepository.delete<IDoctor>(doctorId, doctorResource.transform);
       return deletedDoctor;
     } catch (error) {
       throw error;
@@ -65,15 +61,15 @@ export default class DoctorService {
 
   public async updateDoctor(doctorId: string, payload: Partial<IDoctor>): Promise<IDoctor> {
     try {
-      const { biography, isActive, workExperience, phoneNumber, registrationId } = payload;
-      const updatedDoctor = await this.doctorRepo.update<IDoctor, Doctor>(
+      const { biography, is_active, work_experience, phone_number, registration_id } = payload;
+      const updatedDoctor = await this.doctorRepository.update<IDoctor, Doctor>(
         doctorId,
         {
-          ...(isActive ? { isActive } : {}),
-          ...(workExperience ? { workExperience } : {}),
+          ...(is_active ? { is_active } : {}),
+          ...(work_experience ? { work_experience } : {}),
           ...(biography ? { biography } : {}),
-          ...(phoneNumber ? { phoneNumber } : {}),
-          ...(registrationId ? { registrationId } : {}),
+          ...(phone_number ? { phone_number } : {}),
+          ...(registration_id ? { registration_id } : {}),
         },
         doctorResource.transform
       );
@@ -85,7 +81,7 @@ export default class DoctorService {
 
   public async getDoctorInfos(doctorId: string) {
     try {
-      const doctorInfos = await this.doctorRepo.getDoctorInfos(doctorId);
+      const doctorInfos = await this.doctorRepository.getDoctorInfos(doctorId);
       return doctorInfos;
     } catch (error) {
       throw error;

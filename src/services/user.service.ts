@@ -16,39 +16,22 @@ export default class UserService {
     this.userRoleRepository = new UserRoleRepository()
   }
 
-  public async createUser(data: Partial<IUser>): Promise<IUser> {
-    try {
-
-      const newUser = await this.userRepository.create<IUserCreateDto, IUser>(
-        {
-          first_name: data.firstName,
-          last_name: data.lastName,
-          email: data.email,
-          password: data.password,
-          username: data.userName,
-          dob: data.dob,
-          phone_number: data.phone,
-          user_type: data.userType,
-        },
-        userResource.transform
-      );
+  public async createUser(data: IUserCreateDto): Promise<IUser> {
+      const newUser = await this.userRepository.createUser(data);
       return newUser;
-    } catch (error) {
-      throw error;
-    }
   }
 
 
   public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
     try {
-      const { email, firstName, lastName, phone } = payload;
+      const { email, first_name, last_name, phone_number } = payload;
       const user = await this.userRepository.update<IUser, User>(
         id,
         {
           ...(email ? { email } : {}),
-          ...(firstName ? { firstName } : {}),
-          ...(lastName ? { lastName } : {}),
-          ...(phone ? { phone } : {}),
+          ...(first_name ? { first_name } : {}),
+          ...(last_name ? { last_name } : {}),
+          ...(phone_number ? { phone_number } : {}),
         },
         userResource.transform
       );
@@ -107,7 +90,7 @@ export default class UserService {
 
   public async getAllUserRoles(userId: string) {
     try {
-      const userRoles = await db.user_role.findMany({
+      const userRoles = await db.user_Role.findMany({
         where: {
           user_id: userId,
         },
@@ -123,7 +106,7 @@ export default class UserService {
 
   public async addOrRemoveUserRoles({ roleIds, userId }) {
     try {
-   
+
       const userALLRolesIds = await this.userRoleRepository.findAllRolesByUserId(userId);
       const { itemsToBeAdded, itemsToBeDeleted } = itemDeletedAndAdded(
         userALLRolesIds,

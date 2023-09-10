@@ -28,9 +28,9 @@ export default class SpecializationService extends BaseRepository<DbType> {
     }
   }
 
-  public async createSpecialization(data: Partial<ISpecialization>): Promise<ISpecialization> {
+  public async createSpecialization(data: ISpecializationCreateDto): Promise<ISpecialization> {
     try {
-      const newSpecialization = await this.create<ISpecializationCreateDto, ISpecialization>(
+      const newSpecialization = await this.create<ISpecialization, Specialization>(
         {
           name: data.name,
           description: data.description

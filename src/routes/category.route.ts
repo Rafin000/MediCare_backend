@@ -4,18 +4,18 @@ import CategoryController from '../controllers/category.controller';
 const categoryRouter = Router();
 
 // Get all categories
-categoryRouter.get("/categories", CategoryController.getAllCategories);
+categoryRouter.get("/categories/all", CategoryController.getAllCategories);
 
 // Get a category
-categoryRouter.get("/categories/:categoryId?", CategoryController.getCategory);
+categoryRouter.get("/categories/:categoryId", CategoryController.getCategory);
 
 // Create a category
 categoryRouter.post("/category", CategoryController.createCategory);
 
 // Delete a category
-categoryRouter.delete("/categories/:categoryId?", CategoryController.deleteCategory);
+categoryRouter.delete("/categories/:categoryId", CategoryController.deleteCategory);
 
 // Update a category
-categoryRouter.put("/categories/:categoryId?", CategoryController.updateCategory);
+categoryRouter.put("/categories/:categoryId", CategoryController.updateCategory);
 
 export default categoryRouter;

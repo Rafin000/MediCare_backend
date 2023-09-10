@@ -28,9 +28,9 @@ export default class DepartmentService extends BaseRepository<DbType> {
     }
   }
 
-  public async createDepartment(data: Partial<IDepartment>): Promise<IDepartment> {
+  public async createDepartment(data: IDepartmentCreateDto): Promise<IDepartment> {
     try {
-      const newDepartment = await this.create<IDepartmentCreateDto, IDepartment>(
+      const newDepartment = await this.create<IDepartment, Department>(
         {
           name: data.name,
           description: data.description

@@ -9,7 +9,9 @@ export default class BaseRepository<DatabaseType> {
     this.model = model
   }
 
-  public async create<parismaTypeData, formattedTypeData>(data: parismaTypeData, transformer: (data: parismaTypeData) => formattedTypeData): Promise<formattedTypeData> {
+  public async create<FormattedDataType, PrismaTableType>(
+    data: Partial<PrismaTableType>,
+    transformer: (data: PrismaTableType) => FormattedDataType): Promise<FormattedDataType> {
     try {
       const newItem = await this.db[this.model].create({ data });
       return transformer(newItem);

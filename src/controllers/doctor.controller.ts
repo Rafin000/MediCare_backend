@@ -1,4 +1,4 @@
-import { IDoctor, Request } from "../types";
+import { IDoctor, IDoctorCreateDto, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import DoctorService from "../services/doctor.service";
@@ -34,14 +34,12 @@ export default class DoctorController {
 
   static createDoctor = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as IDoctor;
-      const { userId } = req.params
+      const payload = req.body as IDoctorCreateDto;
       const doctorService = new DoctorService();
-      const newDoctor: IDoctor = await doctorService.createDoctor(payload, userId);
+      const newDoctor: IDoctor = await doctorService.createDoctor(payload);
       apiResponse.sendSuccess({ res: res, data: newDoctor });
     }
   );
-
   static deleteDoctor = catchAsync(
     async (req: Request, res: Response) => {
       const doctorId = req.params.doctorId;

@@ -6,15 +6,15 @@ class UserResource implements Transformer {
 
   transform(user: any): IUser {
     return {
-      id: user.userId,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      id: user.user_Id,
+      first_name: user.first_name,
+      last_name: user.last_name,
       email: user.email,
       password: user.password,
-      userName: user.userName,
+      username: user.username,
       dob: user.dob,
-      phone: user.phone,
-      userType: user.user_type,
+      phone_number: user.phone_number,
+      user_type: user.user_type,
       roles: user?.user_roles?.map(userRole => userRole?.role)?.map(role => ({ id: role.roleId, name: role.roleName }))
     }
   }

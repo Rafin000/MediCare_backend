@@ -28,9 +28,9 @@ export default class CategoryService extends BaseRepository<DbType> {
     }
   }
 
-  public async createCategory(data: Partial<ICategory>): Promise<ICategory> {
+  public async createCategory(data: ICategoryCreateDto): Promise<ICategory> {
     try {
-      const newCategory = await this.create<ICategoryCreateDto, ICategory>(
+      const newCategory = await this.create<ICategory, Category>(
         {
           name: data.name,
           description: data.description

@@ -28,9 +28,9 @@ export default class LocationService extends BaseRepository<DbType> {
     }
   }
 
-  public async createLocation(data: Partial<ILocation>): Promise<ILocation> {
+  public async createLocation(data: ILocationCreateDto): Promise<ILocation> {
     try {
-      const newLocation = await this.create<ILocationCreateDto, ILocation>(
+      const newLocation = await this.create<ILocation, Location>(
         {
           latitude: data.latitude,
           longitude: data.longitude,

@@ -1,13 +1,13 @@
 export type IHospital = {
   id: string,
-  registrationId: string,
+  registration_id: string,
   type: string,
   name: string,
   phone: string | null,
   email: string,
   fax: string | null,
-  clinicHour: string | null,
-  labHour: string | null,
+  clinic_hour: string | null,
+  lab_hour: string | null,
   description: string | null
 }
 
