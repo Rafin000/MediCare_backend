@@ -1,4 +1,4 @@
-import { ICategory, Request } from "../types";
+import { ICategory, ICategoryCreateDto, ICategoryUpdateDto, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import CategoryService from "../services/category.service";
@@ -25,7 +25,7 @@ export default class CategoryController {
 
   static createCategory = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as ICategory;
+      const payload = req.body as ICategoryCreateDto;
       const categoryService = new CategoryService();
       const newCategory: ICategory = await categoryService.createCategory(payload);
       apiResponse.sendSuccess({ res: res, data: newCategory });
@@ -44,7 +44,7 @@ export default class CategoryController {
   static updateCategory = catchAsync(
     async (req: Request, res: Response) => {
       const categoryId = req.params.categoryId;
-      const payload = req.body as Partial<ICategory>;
+      const payload = req.body as ICategoryUpdateDto;
       const categoryService = new CategoryService();
       const updatedCategory: ICategory = await categoryService.updateCategory(categoryId, payload);
       apiResponse.sendSuccess({ res, data: updatedCategory });

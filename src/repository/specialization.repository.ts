@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import specializationCollection from "../transformer/specialization.transformer/specialization.collection";
 import specializationResource from "../transformer/specialization.transformer/specialization.resource";
-import { ISpecialization, ISpecializationCreateDto } from "../types";
+import { ISpecialization, ISpecializationCreateDto, ISpecializationUpdateDto } from "../types";
 
 export default class SpecializationRepository extends BaseRepository<DbType> {
   constructor() {
@@ -52,7 +52,7 @@ export default class SpecializationRepository extends BaseRepository<DbType> {
     }
   }
 
-  public async updateSpecialization(specializationId: string, payload: Partial<ISpecialization>): Promise<ISpecialization> {
+  public async updateSpecialization(specializationId: string, payload: ISpecializationUpdateDto): Promise<ISpecialization> {
     try {
       const { name, description } = payload;
       const updatedSpecialization = await this.update<ISpecialization, Specialization>(

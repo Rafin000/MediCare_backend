@@ -6,6 +6,9 @@ const treatmentRouter = Router();
 // Get all treatments
 treatmentRouter.get("/treatments/all", TreatmentController.getAllTreatments);
 
+//get hospitals with pagination
+treatmentRouter.get('/treatments', TreatmentController.getTreatments)
+
 //get a treatment
 treatmentRouter.get("/treatments/:treatmentId", TreatmentController.getTreatment);
 

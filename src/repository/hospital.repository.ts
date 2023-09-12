@@ -1,9 +1,11 @@
 import { Hospital } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import hospitalResource from "../transformer/hospital.transformer/hospital.resource";
-import { IHospital, IHospitalCreateDto } from "../types";
+import { IHospital, IHospitalCreateDto, IHospitalUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import BaseRepository from "./base.repository";
 import hospitalCollection from "../transformer/hospital.transformer/hospital.collection";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
+import doctorCollection from "../transformer/doctor.transformer/doctor.collection";
 
 
 export default class HospitalRepository extends BaseRepository<DbType>{
@@ -19,6 +21,32 @@ export default class HospitalRepository extends BaseRepository<DbType>{
       return Promise.reject(error);
     }
   }
+
+
+  public async getHospitals({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<IHospital>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: hospitalCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
   public async getHospital(hospitalId: string): Promise<IHospital> {
     try {
@@ -60,7 +88,7 @@ export default class HospitalRepository extends BaseRepository<DbType>{
     }
   }
 
-  public async updateHospital(hospitalId: string, payload: Partial<IHospital>): Promise<IHospital> {
+  public async updateHospital(hospitalId: string, payload: IHospitalUpdateDto): Promise<IHospital> {
     try {
       const { name, type, email, fax, phone_number, description, lab_hour, clinic_hour, registration_id } = payload;
       const updatedHospital = await this.update<IHospital, Hospital>(

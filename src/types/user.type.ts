@@ -1,3 +1,4 @@
+import { User, User_Role } from "@prisma/client"
 import { IRole } from "../types/role.type"
 export type IUserAddOrRemoveRolesPayload = {
   roleIds: string[]
@@ -31,4 +32,10 @@ export type IUserCreateDto = {
   phone_number: string | null
   user_type: IUserType | undefined
   dob: string | null
-} 
+}
+
+export type IUserUpdateDto = Partial<IUserCreateDto>
+
+export type PrismaUserModel = User & {
+  user_roles?: User_Role[]; 
+};

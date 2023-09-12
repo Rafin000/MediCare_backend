@@ -1,7 +1,4 @@
-import { Department } from "@prisma/client";
-import departmentCollection from "../transformer/department.transformer/department.collection";
-import departmentResource from "../transformer/department.transformer/department.resource";
-import { IDepartment, IDepartmentCreateDto } from "../types";
+import { IDegreeUpdateDto, IDepartment, IDepartmentCreateDto } from "../types";
 import DepartmentRepository from "../repository/department.repository";
 
 export default class DepartmentService {
@@ -47,7 +44,7 @@ export default class DepartmentService {
     }
   }
 
-  public async updateDepartment(departmentId: string, payload: Partial<IDepartment>): Promise<IDepartment> {
+  public async updateDepartment(departmentId: string, payload: IDegreeUpdateDto): Promise<IDepartment> {
     try {
       const updatedDepartment = await this.departmentRepository.updateDepartment(departmentId, payload)
       return updatedDepartment;

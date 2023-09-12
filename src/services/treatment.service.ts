@@ -1,9 +1,4 @@
-import { Treatment } from "@prisma/client";
-import { DbType, db } from "../db.server";
-import BaseRepository from "../repository/base.repository";
-import treatmentCollection from "../transformer/treatment.transformer/treatment.collection";
-import treatmentResource from "../transformer/treatment.transformer/treatment.resource";
-import { ITreatment, ITreatmentCreateDto } from "../types";
+import { ITreatment, ITreatmentCreateDto, ITreatmentUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import TreatmentRepository from "../repository/treatment.repository";
 
 export default class TreatmentService {
@@ -21,6 +16,17 @@ export default class TreatmentService {
       throw error;
     }
   }
+
+
+  public async getTreatments({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<ITreatment>> {
+    const response = await this.treatmentRepository.getTreatments({ ...params });
+    return response;
+  }
+
 
   public async getTreatment(treatmentId: string): Promise<ITreatment> {
     try {
@@ -49,7 +55,7 @@ export default class TreatmentService {
     }
   }
 
-  public async updateTreatment(treatmentId: string, payload: Partial<ITreatment>): Promise<ITreatment> {
+  public async updateTreatment(treatmentId: string, payload: ITreatmentUpdateDto): Promise<ITreatment> {
     try {
       const updatedTreatment = await this.treatmentRepository.updateTreatment(treatmentId, payload);
       return updatedTreatment;

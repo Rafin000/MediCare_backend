@@ -3,7 +3,8 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import treatmentCollection from "../transformer/treatment.transformer/treatment.collection";
 import treatmentResource from "../transformer/treatment.transformer/treatment.resource";
-import { ITreatment, ITreatmentCreateDto } from "../types";
+import { ITreatment, ITreatmentCreateDto, ITreatmentUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
 
 export default class TreatmentRepository extends BaseRepository<DbType> {
   constructor() {
@@ -18,6 +19,33 @@ export default class TreatmentRepository extends BaseRepository<DbType> {
       throw error;
     }
   }
+
+
+  public async getTreatments({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<ITreatment>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: treatmentCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  
 
   public async getTreatment(treatmentId: string): Promise<ITreatment> {
     try {
@@ -52,7 +80,7 @@ export default class TreatmentRepository extends BaseRepository<DbType> {
     }
   }
 
-  public async updateTreatment(treatmentId: string, payload: Partial<ITreatment>): Promise<ITreatment> {
+  public async updateTreatment(treatmentId: string, payload: ITreatmentUpdateDto): Promise<ITreatment> {
     try {
       const { type, description } = payload;
       const updatedTreatment = await this.update<ITreatment, Treatment>(

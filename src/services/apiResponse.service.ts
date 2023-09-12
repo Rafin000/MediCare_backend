@@ -1,26 +1,29 @@
-import { Response } from "express";
+import { Response } from 'express';
 const apiResponse = {
   sendSuccess: ({
     res,
-    message = "Successful",
+    message = 'Successful',
     code = 200,
     data = {},
+    meta,
   }: {
     res: Response;
     message?: string;
     code?: number;
     data?: any;
+    meta?: Object;
   }) => {
     res.status(code).json({
       message,
       isSuccess: true,
       statusCode: code,
       data: data,
+      ...(meta ? { meta: meta } : {}),
     });
   },
   sendError: ({
     res,
-    message = "Error",
+    message = 'Error',
     code = 500,
     data = {},
     error,

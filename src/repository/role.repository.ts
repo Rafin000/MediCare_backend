@@ -2,7 +2,7 @@ import { Role } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import roleResource from "../transformer/hospital.transformer/hospital.resource";
-import { IRole, IRoleCreateDto } from "../types/role.type";
+import { IRole, IRoleCreateDto, IRoleUpdateDto } from "../types/role.type";
 import roleCollection from "../transformer/role.transformer/role.collection";
 
 export default class RoleRepository extends BaseRepository<DbType> {
@@ -43,7 +43,7 @@ export default class RoleRepository extends BaseRepository<DbType> {
     }
   }
 
-  public async updateRole(id: string, payload: Partial<IRole>): Promise<IRole> {
+  public async updateRole(id: string, payload: IRoleUpdateDto): Promise<IRole> {
     try {
       const { name, description } = payload;
       const role = await this.update<IRole, Role>(

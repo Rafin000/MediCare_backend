@@ -8,3 +8,5 @@ export type IAwardCreateDto = {
   name: string,
   description: string | null
 }
+
+export type IAwardUpdateDto = Partial<IAwardCreateDto>

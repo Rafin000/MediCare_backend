@@ -20,4 +20,8 @@ export type IDoctorCreateDto = {
   is_active: boolean,
   registration_id: string,
   work_experience: JsonArray | null
-} 
+}
+
+export type IDoctorUpdateDto = Partial<IDoctorCreateDto>
+
+export type IDoctorCreateWithUserInfoDto = IDoctorCreateDto & IUserCreateDto;

@@ -1,18 +1,17 @@
-import { Category } from "@prisma/client";
-import { DbType, db } from "../db.server";
-import BaseRepository from "../repository/base.repository";
-import categoryCollection from "../transformer/category.transformer/category.collection";
-import categoryResource from "../transformer/category.transformer/category.resource";
-import { ICategory, ICategoryCreateDto } from "../types";
+import { ICategory, ICategoryCreateDto, ICategoryUpdateDto } from "../types";
+import CategoryRepository from "../repository/category.repository";
 
-export default class CategoryService extends BaseRepository<DbType> {
+export default class CategoryService {
+
+  protected categoryRepository: CategoryRepository;
+
   constructor() {
-    super(db, 'Category');
+    this.categoryRepository = new CategoryRepository();
   }
 
   public async getAllCategories(): Promise<ICategory[]> {
     try {
-      const allCategories = await this.getAll<ICategory, Category>(categoryCollection.transformCollection);
+      const allCategories = await this.categoryRepository.getAllCategories();
       return allCategories;
     } catch (error) {
       throw error;
@@ -21,7 +20,7 @@ export default class CategoryService extends BaseRepository<DbType> {
 
   public async getCategory(categoryId: string): Promise<ICategory> {
     try {
-      const category = await this.get<ICategory, Category>(categoryId, categoryResource.transform);
+      const category = await this.categoryRepository.getCategory(categoryId);
       return category;
     } catch (error) {
       throw error;
@@ -30,13 +29,7 @@ export default class CategoryService extends BaseRepository<DbType> {
 
   public async createCategory(data: ICategoryCreateDto): Promise<ICategory> {
     try {
-      const newCategory = await this.create<ICategory, Category>(
-        {
-          name: data.name,
-          description: data.description
-        },
-        categoryResource.transform
-      );
+      const newCategory = await this.categoryRepository.createCategory(data);
       return newCategory;
     } catch (error) {
       throw error;
@@ -45,24 +38,16 @@ export default class CategoryService extends BaseRepository<DbType> {
 
   public async deleteCategory(categoryId: string): Promise<ICategory> {
     try {
-      const deletedCategory = await this.delete<ICategory>(categoryId, categoryResource.transform);
+      const deletedCategory = await this.categoryRepository.deleteCategory(categoryId);
       return deletedCategory;
     } catch (error) {
       throw error;
     }
   }
 
-  public async updateCategory(categoryId: string, payload: Partial<ICategory>): Promise<ICategory> {
+  public async updateCategory(categoryId: string, payload: ICategoryUpdateDto): Promise<ICategory> {
     try {
-      const { name, description } = payload;
-      const updatedCategory = await this.update<ICategory, Category>(
-        categoryId,
-        {
-          ...(name ? { name } : {}),
-          ...(description ? { description } : {}),
-        },
-        categoryResource.transform
-      );
+      const updatedCategory = await this.categoryRepository.updateCategory(categoryId, payload)
       return updatedCategory;
     } catch (error) {
       throw error;

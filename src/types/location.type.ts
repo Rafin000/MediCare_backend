@@ -20,3 +20,5 @@ export type ILocationCreateDto = {
   thana: string | null,
   district: string | null
 }
+
+export type ILocationUpdateDto = Partial<ILocationCreateDto>

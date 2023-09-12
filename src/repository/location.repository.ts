@@ -3,7 +3,7 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import locationCollection from "../transformer/location.transformer/location.collection";
 import locationResource from "../transformer/location.transformer/location.resource";
-import { ILocation, ILocationCreateDto } from "../types";
+import { ILocation, ILocationCreateDto, ILocationUpdateDto } from "../types";
 
 export default class LocationRepository extends BaseRepository<DbType> {
   constructor() {
@@ -58,7 +58,7 @@ export default class LocationRepository extends BaseRepository<DbType> {
     }
   }
 
-  public async updateLocation(locationId: string, payload: Partial<ILocation>): Promise<ILocation> {
+  public async updateLocation(locationId: string, payload: ILocationUpdateDto): Promise<ILocation> {
     try {
       const { latitude, longitude, country, address, thana, district, division, street } = payload;
       const updatedLocation = await this.update<ILocation, Location>(

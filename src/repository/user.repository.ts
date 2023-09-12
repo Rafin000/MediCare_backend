@@ -1,9 +1,11 @@
 import { DbType, db } from "../db.server";
-import { IUser, IUserCreateDto } from "../types/user.type";
+import { IUser, IUserCreateDto, IUserUpdateDto } from "../types/user.type";
 import BaseRepository from "./base.repository";
 import { User } from "@prisma/client";
 import userCollection from "../transformer/user.transformer/user.collection";
 import userResource from "../transformer/user.transformer/user.resource";
+import { PaginateResponse, PaginationQueryParams } from "../types";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
 
 export default class UserRepository extends BaseRepository<DbType> {
   constructor() {
@@ -33,7 +35,7 @@ export default class UserRepository extends BaseRepository<DbType> {
   }
 
 
-  public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
+  public async updateUser(id: string, payload: IUserUpdateDto): Promise<IUser> {
     try {
       const { email, first_name, last_name, phone_number } = payload;
       const user = await this.update<IUser, User>(
@@ -57,6 +59,31 @@ export default class UserRepository extends BaseRepository<DbType> {
     try {
       const user = await this.delete<IUser>(id, userResource.transform);
       return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  public async getUsers({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<IUser>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: userCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
     } catch (error) {
       throw error;
     }

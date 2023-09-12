@@ -1,4 +1,5 @@
 import { type Prisma } from "@prisma/client";
+import { PaginateResponse } from "../types";
 
 export default class BaseRepository<DatabaseType> {
   protected db: DatabaseType;
@@ -106,6 +107,55 @@ export default class BaseRepository<DatabaseType> {
         },
       });
       return transformer(deletedUser);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  public async paginate<FormattedDataType, PrismaTableType>({
+    page,
+    pageSize,
+    transformCollection,
+    options = {} as {
+      where?: any;
+      orderBy?: any[] | any;
+      includes?: any | any[];
+    },
+  }: {
+    page: number;
+    pageSize: number;
+    transformCollection: (data: PrismaTableType[]) => FormattedDataType[];
+    options?: {
+      where?: any;
+      orderBy?: any[] | any;
+      includes?: any | any[];
+    };
+  }): Promise<PaginateResponse<FormattedDataType>> {
+    const skip = (page - 1) * pageSize;
+    const totalItems = await this.db[this.model].count({
+      where: options.where,
+    });
+
+    try {
+      const data = await this.db[this.model].findMany({
+        where: options.where,
+        orderBy: options.orderBy,
+        skip,
+        take: pageSize,
+        include: options.includes,
+      });
+
+      const totalPages = Math.ceil(totalItems / pageSize);
+      return {
+        data: transformCollection(data),
+        meta: {
+          totalItems,
+          totalPages,
+          perPage: pageSize,
+          currentPage: page,
+        },
+      };
     } catch (error) {
       throw error;
     }

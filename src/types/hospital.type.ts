@@ -22,3 +22,5 @@ export type IHospitalCreateDto = {
   lab_hour: string | null,
   description: string | null
 }
+
+export type IHospitalUpdateDto = Partial<IHospitalCreateDto>

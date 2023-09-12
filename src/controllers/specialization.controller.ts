@@ -1,4 +1,4 @@
-import { ISpecialization, Request } from "../types";
+import { ISpecialization, ISpecializationCreateDto, ISpecializationUpdateDto, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import SpecializationService from "../services/specialization.service";
@@ -25,7 +25,7 @@ export default class SpecializationController {
 
   static createSpecialization = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as ISpecialization;
+      const payload = req.body as ISpecializationCreateDto;
       const specializationService = new SpecializationService();
       const newSpecialization: ISpecialization = await specializationService.createSpecialization(payload);
       apiResponse.sendSuccess({ res: res, data: newSpecialization });
@@ -44,7 +44,7 @@ export default class SpecializationController {
   static updateSpecialization = catchAsync(
     async (req: Request, res: Response) => {
       const specializationId = req.params.specializationId;
-      const payload = req.body as Partial<ISpecialization>;
+      const payload = req.body as ISpecializationUpdateDto;
       const specializationService = new SpecializationService();
       const updatedSpecialization: ISpecialization = await specializationService.updateSpecialization(specializationId, payload);
       apiResponse.sendSuccess({ res, data: updatedSpecialization });

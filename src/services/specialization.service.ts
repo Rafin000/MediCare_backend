@@ -1,9 +1,4 @@
-import { Specialization } from "@prisma/client";
-import { DbType, db } from "../db.server";
-import BaseRepository from "../repository/base.repository";
-import specializationCollection from "../transformer/specialization.transformer/specialization.collection";
-import specializationResource from "../transformer/specialization.transformer/specialization.resource";
-import { ISpecialization, ISpecializationCreateDto } from "../types";
+import { ISpecialization, ISpecializationCreateDto, ISpecializationUpdateDto } from "../types";
 import SpecializationRepository from "../repository/specialization.repository";
 
 export default class SpecializationService {
@@ -48,7 +43,7 @@ export default class SpecializationService {
     }
   }
 
-  public async updateSpecialization(specializationId: string, payload: Partial<ISpecialization>): Promise<ISpecialization> {
+  public async updateSpecialization(specializationId: string, payload: ISpecializationUpdateDto): Promise<ISpecialization> {
     try {
       const updatedSpecialization = await this.specializationRepository.updateSpecialization(specializationId, payload)
       return updatedSpecialization;

@@ -1,7 +1,4 @@
-import { Doctor } from "@prisma/client";
-import doctorCollection from "../transformer/doctor.transformer/doctor.collection";
-import doctorResource from "../transformer/doctor.transformer/doctor.resource";
-import { IDoctor, IDoctorCreateDto } from "../types";
+import { IDoctor, IDoctorCreateDto, IDoctorCreateWithUserInfoDto, IDoctorUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import DoctorRepository from "../repository/doctor.repository";
 import UserRepository from "../repository/user.repository";
 
@@ -22,6 +19,15 @@ export default class DoctorService {
     }
   }
 
+  public async getDoctors({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<IDoctor>> {
+    const response = await this.doctorRepository.getDoctors({ ...params });
+    return response;
+  }
+
   public async getDoctor(doctorId: string): Promise<IDoctor> {
     try {
       const doctor = await this.doctorRepository.getDoctor(doctorId);
@@ -31,7 +37,7 @@ export default class DoctorService {
     }
   }
 
-  public async createDoctor(data: IDoctorCreateDto): Promise<IDoctor> {
+  public async createDoctor(data: IDoctorCreateWithUserInfoDto): Promise<IDoctor> {
     try {
       const newDoctor = await this.doctorRepository.createDoctor(data)
       return newDoctor;
@@ -48,10 +54,19 @@ export default class DoctorService {
     }
   }
 
-  public async updateDoctor(doctorId: string, payload: Partial<IDoctor>): Promise<IDoctor> {
+  public async updateDoctor(doctorId: string, payload: IDoctorUpdateDto): Promise<IDoctor> {
     try {
       const updatedDoctor = await this.doctorRepository.updateDoctor(doctorId, payload)
       return updatedDoctor;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getDoctorInfos(doctorId: string) {
+    try {
+      const doctorInfos = await this.doctorRepository.getDoctorInfos(doctorId);
+      return doctorInfos;
     } catch (error) {
       throw error;
     }

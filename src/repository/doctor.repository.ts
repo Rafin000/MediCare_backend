@@ -1,13 +1,18 @@
 import { Doctor } from "@prisma/client";
 import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
-import { IDoctor, IDoctorCreateDto } from "../types";
+import { IDoctor, IDoctorCreateDto, IDoctorCreateWithUserInfoDto, IDoctorUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import doctorCollection from "../transformer/doctor.transformer/doctor.collection";
 import doctorResource from "../transformer/doctor.transformer/doctor.resource";
+import UserRepository from "./user.repository";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
 
 export default class DoctorRepository extends BaseRepository<DbType> {
+  private readonly userRepository: UserRepository
+
   constructor() {
     super(db, 'Doctor');
+    this.userRepository = new UserRepository();
   }
 
   public async getAllDoctors(): Promise<IDoctor[]> {
@@ -19,6 +24,33 @@ export default class DoctorRepository extends BaseRepository<DbType> {
     }
   }
 
+
+  public async getDoctors({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<IDoctor>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: doctorCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+
   public async getDoctor(doctorId: string): Promise<IDoctor> {
     try {
       const doctor = await this.get<IDoctor, Doctor>(doctorId, doctorResource.transform);
@@ -28,12 +60,12 @@ export default class DoctorRepository extends BaseRepository<DbType> {
     }
   }
 
-  public async createDoctor(data: IDoctorCreateDto): Promise<IDoctor> {
+  public async createDoctor(data: IDoctorCreateWithUserInfoDto): Promise<IDoctor> {
     try {
-      // if(!userId){
-      //  const newUser =  await this.userRepository.createUser(data);
-      //  userId = newUser.id
-      // }
+      if (!data.user_id) {
+        const newUser = await this.userRepository.createUser(data);
+        data.user_id = newUser.id
+      }
       const newDoctor = await this.create<IDoctor, Doctor>(
         {
           user_id: data.user_id,
@@ -59,7 +91,7 @@ export default class DoctorRepository extends BaseRepository<DbType> {
     }
   }
 
-  public async updateDoctor(doctorId: string, payload: Partial<IDoctor>): Promise<IDoctor> {
+  public async updateDoctor(doctorId: string, payload: IDoctorUpdateDto): Promise<IDoctor> {
     try {
       const { biography, is_active, work_experience, phone_number, registration_id } = payload;
       const updatedDoctor = await this.update<IDoctor, Doctor>(

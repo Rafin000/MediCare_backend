@@ -1,4 +1,4 @@
-import { IDepartment, Request } from "../types";
+import { IDegreeUpdateDto, IDepartment, IDepartmentCreateDto, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import DepartmentService from "../services/department.service";
@@ -25,7 +25,7 @@ export default class DepartmentController {
 
   static createDepartment = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as IDepartment;
+      const payload = req.body as IDepartmentCreateDto;
       const departmentService = new DepartmentService();
       const newDepartment: IDepartment = await departmentService.createDepartment(payload);
       apiResponse.sendSuccess({ res: res, data: newDepartment });
@@ -44,7 +44,7 @@ export default class DepartmentController {
   static updateDepartment = catchAsync(
     async (req: Request, res: Response) => {
       const departmentId = req.params.departmentId;
-      const payload = req.body as Partial<IDepartment>;
+      const payload = req.body as IDegreeUpdateDto;
       const departmentService = new DepartmentService();
       const updatedDepartment: IDepartment = await departmentService.updateDepartment(departmentId, payload);
       apiResponse.sendSuccess({ res, data: updatedDepartment });
