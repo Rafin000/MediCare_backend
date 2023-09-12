@@ -1,4 +1,4 @@
-import { ICategory, ICategoryCreateDto, ICategoryUpdateDto } from "../types";
+import { ICategory, ICategoryCreateDto, ICategoryUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import CategoryRepository from "../repository/category.repository";
 
 export default class CategoryService {
@@ -17,6 +17,17 @@ export default class CategoryService {
       throw error;
     }
   }
+
+
+  public async getCategories({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<ICategory>> {
+    const response = await this.categoryRepository.getCategories({ ...params });
+    return response;
+  }
+
 
   public async getCategory(categoryId: string): Promise<ICategory> {
     try {

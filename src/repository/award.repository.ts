@@ -3,7 +3,8 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import awardCollection from "../transformer/award.transformer/award.collection";
 import awardResource from "../transformer/award.transformer/award.resource";
-import { IAward, IAwardCreateDto, IAwardUpdateDto } from "../types";
+import { IAward, IAwardCreateDto, IAwardUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
 
 export default class AwardRepository extends BaseRepository<DbType> {
   constructor() {
@@ -19,6 +20,32 @@ export default class AwardRepository extends BaseRepository<DbType> {
     }
   }
 
+  public async getAwards({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<IAward>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: awardCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+
   public async getAward(awardId: string): Promise<IAward> {
     try {
       const award = await this.get<IAward, Award>(awardId, awardResource.transform);
@@ -27,6 +54,7 @@ export default class AwardRepository extends BaseRepository<DbType> {
       throw error;
     }
   }
+  
 
   public async createAward(data: IAwardCreateDto): Promise<IAward> {
     try {

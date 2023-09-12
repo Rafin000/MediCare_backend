@@ -2,7 +2,7 @@ import apiResponse from "../services/apiResponse.service";
 import RoleService from "../services/role.service";
 import { IRole, IRoleCreateDto, IRoleUpdateDto } from "../types/role.type";
 import catchAsync from "../utils/catchAsync";
-import { Request } from "../types";
+import { PaginateResponse, Request } from "../types";
 import { Response } from "express";
 
 export default class RoleController {
@@ -12,6 +12,23 @@ export default class RoleController {
       const roleService = new RoleService();
       const newRole: IRole = await roleService.createRole({ roleData: requestDto })
       apiResponse.sendSuccess({ res: res, data: newRole, code: 201 })
+    }
+  )
+
+
+  static getRoles = catchAsync(
+    async (req: Request, res: Response) => {
+      const roleService = new RoleService();
+      const { page, limit, filters, includes } = req.query;
+      const response: PaginateResponse<IRole> = await roleService.getRoles({
+        params: {
+          page: Number(page ?? 1),
+          limit: Number(limit ?? 20),
+          filters: filters as Record<string, any>,
+          includes: includes as string
+        },
+      });
+      apiResponse.sendSuccess({ res: res, data: response.data, meta: response.meta })
     }
   )
 

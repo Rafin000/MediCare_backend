@@ -1,4 +1,4 @@
-import { ISpecialization, ISpecializationCreateDto, ISpecializationUpdateDto, Request } from "../types";
+import { ISpecialization, ISpecializationCreateDto, ISpecializationUpdateDto, PaginateResponse, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import SpecializationService from "../services/specialization.service";
@@ -13,6 +13,23 @@ export default class SpecializationController {
       apiResponse.sendSuccess({ res: res, data: specializations });
     }
   );
+
+  static getSpecializations = catchAsync(
+    async (req: Request, res: Response) => {
+      const specializationService = new SpecializationService();
+      const { page, limit, filters, includes } = req.query;
+      const response: PaginateResponse<ISpecialization> = await specializationService.getSpecializations({
+        params: {
+          page: Number(page ?? 1),
+          limit: Number(limit ?? 20),
+          filters: filters as Record<string, any>,
+          includes: includes as string
+        },
+      });
+      apiResponse.sendSuccess({ res: res, data: response.data, meta: response.meta })
+    }
+  )
+
 
   static getSpecialization = catchAsync(
     async (req: Request, res: Response) => {

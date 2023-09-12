@@ -1,7 +1,12 @@
+import { Specialization } from "@prisma/client"
+import { PrismaDoctorSpecializationModel } from "./doctor-specialization.type"
+import { IDoctor } from "./doctor.type"
+
 export type ISpecialization = {
   id: string,
   name: string,
-  description: string | null
+  description: string | null,
+  doctors?: IDoctor[],
 }
 
 export type ISpecializationCreateDto = {
@@ -10,3 +15,7 @@ export type ISpecializationCreateDto = {
 }
 
 export type ISpecializationUpdateDto = Partial<ISpecializationCreateDto>
+
+export type PrismaSpecializationModel = Specialization & {
+  doctors?: PrismaDoctorSpecializationModel[]
+}

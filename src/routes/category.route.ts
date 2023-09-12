@@ -6,6 +6,9 @@ const categoryRouter = Router();
 // Get all categories
 categoryRouter.get("/categories/all", CategoryController.getAllCategories);
 
+//get Categories with pagination
+categoryRouter.get('/categories', CategoryController.getCategories)
+
 // Get a category
 categoryRouter.get("/categories/:categoryId", CategoryController.getCategory);
 

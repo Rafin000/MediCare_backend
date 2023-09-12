@@ -1,4 +1,4 @@
-import { ILocation, ILocationCreateDto, ILocationUpdateDto, Request } from "../types";
+import { ILocation, ILocationCreateDto, ILocationUpdateDto, PaginateResponse, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import LocationService from "../services/location.service";
@@ -13,6 +13,24 @@ export default class LocationController {
       apiResponse.sendSuccess({ res: res, data: locations });
     }
   );
+
+
+  static getLocations = catchAsync(
+    async (req: Request, res: Response) => {
+      const locationService = new LocationService();
+      const { page, limit, filters, includes } = req.query;
+      const response: PaginateResponse<ILocation> = await locationService.getLocations({
+        params: {
+          page: Number(page ?? 1),
+          limit: Number(limit ?? 20),
+          filters: filters as Record<string, any>,
+          includes: includes as string
+        },
+      });
+      apiResponse.sendSuccess({ res: res, data: response.data, meta: response.meta })
+    }
+  )
+
 
   static getLocation = catchAsync(
     async (req: Request, res: Response) => {

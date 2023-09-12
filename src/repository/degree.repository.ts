@@ -3,7 +3,8 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import degreeCollection from "../transformer/degree.transformer/degree.collection";
 import degreeResource from "../transformer/degree.transformer/degree.resource";
-import { IDegree, IDegreeCreateDto, IDegreeUpdateDto } from "../types";
+import { IDegree, IDegreeCreateDto, IDegreeUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
 
 export default class DegreeRepository extends BaseRepository<DbType> {
   constructor() {
@@ -18,6 +19,32 @@ export default class DegreeRepository extends BaseRepository<DbType> {
       throw error;
     }
   }
+
+
+  public async getDegrees({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<IDegree>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: degreeCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
   public async getDegree(degreeId: string): Promise<IDegree> {
     try {

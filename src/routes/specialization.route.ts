@@ -9,6 +9,9 @@ specializationRouter.get("/specializations/all", SpecializationController.getAll
 // Get a specialization
 specializationRouter.get("/specializations/:specializationId", SpecializationController.getSpecialization);
 
+//get specialization with pagination
+specializationRouter.get('/specializations', SpecializationController.getSpecializations)
+
 // Create a specialization
 specializationRouter.post("/specialization", SpecializationController.createSpecialization);
 

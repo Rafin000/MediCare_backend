@@ -1,4 +1,4 @@
-import { ILocation, ILocationCreateDto, ILocationUpdateDto } from "../types";
+import { ILocation, ILocationCreateDto, ILocationUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import LocationRepository from "../repository/location.repository";
 
 export default class LocationService {
@@ -16,6 +16,18 @@ export default class LocationService {
       throw error;
     }
   }
+
+
+  public async getLocations({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<ILocation>> {
+    const response = await this.locationRepository.getLocations({ ...params });
+    return response;
+  }
+
+
 
   public async getLocation(locationId: string): Promise<ILocation> {
     try {

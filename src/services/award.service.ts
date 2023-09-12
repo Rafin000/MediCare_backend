@@ -1,4 +1,4 @@
-import { IAward, IAwardCreateDto, IAwardUpdateDto } from "../types";
+import { IAward, IAwardCreateDto, IAwardUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import AwardRepository from "../repository/award.repository";
 
 export default class AwardService {
@@ -14,6 +14,15 @@ export default class AwardService {
     } catch (error) {
       throw error;
     }
+  }
+
+  public async getAwards({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<IAward>> {
+    const response = await this.awardRepository.getAwards({ ...params });
+    return response;
   }
 
   public async getAward(awardId: string): Promise<IAward> {

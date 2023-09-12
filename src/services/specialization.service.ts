@@ -1,4 +1,4 @@
-import { ISpecialization, ISpecializationCreateDto, ISpecializationUpdateDto } from "../types";
+import { ISpecialization, ISpecializationCreateDto, ISpecializationUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import SpecializationRepository from "../repository/specialization.repository";
 
 export default class SpecializationService {
@@ -15,6 +15,17 @@ export default class SpecializationService {
       throw error;
     }
   }
+
+
+  public async getSpecializations({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<ISpecialization>> {
+    const response = await this.specializationRepository.getSpecializations({ ...params });
+    return response;
+  }
+
 
   public async getSpecialization(specializationId: string): Promise<ISpecialization> {
     try {

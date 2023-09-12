@@ -1,7 +1,12 @@
+import { Role } from "@prisma/client"
+import { PrismaUserRoleModel } from "./user-role.type"
+import { IUser } from "./user.type"
+
 export type IRole = {
   name: string,
   description: string | null
-  id: string
+  id: string,
+  users?: IUser[],
 }
 
 
@@ -11,3 +16,7 @@ export type IRoleCreateDto = {
 }
 
 export type IRoleUpdateDto = Partial<IRoleCreateDto>
+
+export type PrismaRoleModel = Role & {
+  users?: PrismaUserRoleModel[]
+}

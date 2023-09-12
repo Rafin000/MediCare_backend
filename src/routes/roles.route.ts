@@ -8,6 +8,13 @@ roleRouter.get(
   RoleController.getAllRoles
 )
 
+
+//get specialization with pagination
+roleRouter.get(
+  '/roles',
+  RoleController.getRoles
+)
+
 //get a role
 roleRouter.get(
   "/roles/:roleId",

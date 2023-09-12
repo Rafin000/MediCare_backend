@@ -1,3 +1,9 @@
+import { PrismaDoctorLocationModel } from "./doctor-location.type"
+import { IDoctor } from "./doctor.type"
+import { PrismaHospitalLocationModel } from "./hospital-location.type"
+import { IHospital } from "./hospital.type"
+import { Location } from "@prisma/client"
+
 export type ILocation = {
   id: string,
   longitude: string,
@@ -7,7 +13,9 @@ export type ILocation = {
   country: string | null,
   division: string | null,
   thana: string | null,
-  district: string | null
+  district: string | null,
+  hospitals?: IHospital[],
+  doctors?: IDoctor[],
 }
 
 export type ILocationCreateDto = {
@@ -22,3 +30,8 @@ export type ILocationCreateDto = {
 }
 
 export type ILocationUpdateDto = Partial<ILocationCreateDto>
+
+export type PrismaLocationModel = Location & {
+  hospitals?: PrismaHospitalLocationModel[],
+  doctors?: PrismaDoctorLocationModel[],
+}

@@ -9,6 +9,9 @@ locationRouter.get("/locations/all", LocationController.getAllLocations);
 // Get a location
 locationRouter.get("/locations/:locationId", LocationController.getLocation);
 
+//get location with pagination
+locationRouter.get('/locations', LocationController.getLocations)
+
 // Create a location
 locationRouter.post("/location", LocationController.createLocation);
 

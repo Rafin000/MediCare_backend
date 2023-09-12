@@ -1,6 +1,7 @@
 export const userQueryParams = {
   allowedIncludes: [
     'roles',
+    'roles.role'
   ],
   allowedFilters: [
     'phone_number',

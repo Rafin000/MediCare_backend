@@ -1,0 +1,1 @@
+const USER_TYPE_VALUES = ['user', 'doctor'] as const;
