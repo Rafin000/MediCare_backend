@@ -1,4 +1,4 @@
-import { IAward, Request } from "../types";
+import { IAward, IAwardCreateDto, IAwardUpdateDto, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import AwardService from "../services/award.service";
@@ -25,7 +25,7 @@ export default class AwardController {
 
   static createAward = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as IAward;
+      const payload = req.body as IAwardCreateDto;
       const awardService = new AwardService();
       const newAward: IAward = await awardService.createAward(payload);
       apiResponse.sendSuccess({ res: res, data: newAward });
@@ -44,7 +44,7 @@ export default class AwardController {
   static updateAward = catchAsync(
     async (req: Request, res: Response) => {
       const awardId = req.params.awardId;
-      const payload = req.body as Partial<IAward>;
+      const payload = req.body as IAwardUpdateDto;
       const awardService = new AwardService();
       const updatedAward: IAward = await awardService.updateAward(awardId, payload);
       apiResponse.sendSuccess({ res, data: updatedAward });

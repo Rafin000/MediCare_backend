@@ -16,3 +16,25 @@ export interface Request extends ExpressRequest {
   user: IUser
 
 }
+
+
+export interface PaginateResponse<T> {
+  data: T[];
+  meta: {
+    totalItems: number;
+    currentPage: number;
+    perPage: number;
+    totalPages: number;
+  };
+}
+
+
+export type PaginationQueryParams = {
+  filters?: Record<string, any>;
+  fields?: string;
+  sorts?: string;
+  search?: string;
+  includes?: string;
+  page?: number;
+  limit?: number;
+};

@@ -1,4 +1,4 @@
-import { IDegree, IDegreeCreateDto } from "../types";
+import { IDegree, IDegreeCreateDto, IDegreeUpdateDto } from "../types";
 import DegreeRepository from "../repository/degree.repository";
 
 export default class DegreeService {
@@ -43,7 +43,7 @@ export default class DegreeService {
     }
   }
 
-  public async updateDegree(degreeId: string, payload: Partial<IDegree>): Promise<IDegree> {
+  public async updateDegree(degreeId: string, payload: IDegreeUpdateDto): Promise<IDegree> {
     try {
       const updatedDegree = await this.degreeRepository.updateDegree(degreeId, payload)
       return updatedDegree;

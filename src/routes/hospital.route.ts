@@ -10,6 +10,10 @@ hospitalRouter.get("/hospitals/all", HospitalController.getAllHospitals);
 //get a hospital
 hospitalRouter.get("/hospitals/:hospitalId", HospitalController.getHospital);
 
+
+//get hospitals with pagination
+hospitalRouter.get('/hospitals', HospitalController.getHospitals)
+
 //create a hospital
 hospitalRouter.post("/hospital", HospitalController.createHospital);
 

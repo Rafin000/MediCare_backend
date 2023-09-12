@@ -1,4 +1,4 @@
-import { IHospital, Request } from "../types";
+import { IHospital, IHospitalCreateDto, IHospitalUpdateDto, PaginateResponse, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import HospitalService from "../services/hospital.service";
@@ -14,6 +14,23 @@ export default class HospitalController {
     }
   )
 
+
+  static getHospitals = catchAsync(
+    async (req: Request, res: Response) => {
+      const hospitalService = new HospitalService();
+      const { page, limit, filters, includes } = req.query;
+      const response: PaginateResponse<IHospital> = await hospitalService.getHospitals({
+        params: {
+          page: Number(page ?? 1),
+          limit: Number(limit ?? 20),
+          filters: filters as Record<string, any>,
+          includes: includes as string
+        },
+      });
+      apiResponse.sendSuccess({ res: res, data: response.data, meta: response.meta })
+    }
+  )
+
   static getHospital = catchAsync(
     async (req: Request, res: Response) => {
       const hospitalService = new HospitalService();
@@ -25,7 +42,7 @@ export default class HospitalController {
 
   static createHospital = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as IHospital
+      const payload = req.body as IHospitalCreateDto
       const hospitalService = new HospitalService()
       const newHospital: IHospital = await hospitalService.createHospital(payload)
       apiResponse.sendSuccess({ res: res, data: newHospital })
@@ -44,7 +61,7 @@ export default class HospitalController {
   static updateHospital = catchAsync(
     async (req: Request, res: Response) => {
       const hospitalId = req.params.hospitalId;
-      const payload = req.body as Partial<IHospital>;
+      const payload = req.body as IHospitalUpdateDto;
       const hospitalService = new HospitalService();
       const updatedHospital: IHospital = await hospitalService.updateHospital(hospitalId, payload);
       apiResponse.sendSuccess({ res, data: updatedHospital })

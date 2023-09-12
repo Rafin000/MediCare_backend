@@ -1,18 +1,15 @@
-import { Award } from "@prisma/client";
-import { DbType, db } from "../db.server";
-import BaseRepository from "../repository/base.repository";
-import awardCollection from "../transformer/award.transformer/award.collection";
-import awardResource from "../transformer/award.transformer/award.resource";
-import { IAward, IAwardCreateDto } from "../types";
+import { IAward, IAwardCreateDto, IAwardUpdateDto } from "../types";
+import AwardRepository from "../repository/award.repository";
 
-export default class AwardService extends BaseRepository<DbType> {
+export default class AwardService {
+  protected readonly awardRepository: AwardRepository;
   constructor() {
-    super(db, 'Award');
+    this.awardRepository = new AwardRepository();
   }
 
   public async getAllAwards(): Promise<IAward[]> {
     try {
-      const allAwards = await this.getAll<IAward, Award>(awardCollection.transformCollection);
+      const allAwards = await this.awardRepository.getAllAwards();
       return allAwards;
     } catch (error) {
       throw error;
@@ -21,7 +18,7 @@ export default class AwardService extends BaseRepository<DbType> {
 
   public async getAward(awardId: string): Promise<IAward> {
     try {
-      const award = await this.get<IAward, Award>(awardId, awardResource.transform);
+      const award = await this.awardRepository.getAward(awardId);
       return award;
     } catch (error) {
       throw error;
@@ -30,13 +27,7 @@ export default class AwardService extends BaseRepository<DbType> {
 
   public async createAward(data: IAwardCreateDto): Promise<IAward> {
     try {
-      const newAward = await this.create<IAward, Award>(
-        {
-          name: data.name,
-          description: data.description
-        },
-        awardResource.transform
-      );
+      const newAward = await this.awardRepository.createAward(data);
       return newAward;
     } catch (error) {
       throw error;
@@ -45,24 +36,16 @@ export default class AwardService extends BaseRepository<DbType> {
 
   public async deleteAward(awardId: string): Promise<IAward> {
     try {
-      const deletedAward = await this.delete<IAward>(awardId, awardResource.transform);
+      const deletedAward = await this.awardRepository.deleteAward(awardId);
       return deletedAward;
     } catch (error) {
       throw error;
     }
   }
 
-  public async updateAward(awardId: string, payload: Partial<IAward>): Promise<IAward> {
+  public async updateAward(awardId: string, payload: IAwardUpdateDto): Promise<IAward> {
     try {
-      const { name, description } = payload;
-      const updatedAward = await this.update<IAward, Award>(
-        awardId,
-        {
-          ...(name ? { name } : {}),
-          ...(description ? { description } : {}),
-        },
-        awardResource.transform
-      );
+      const updatedAward = await this.awardRepository.updateAward(awardId, payload);
       return updatedAward;
     } catch (error) {
       throw error;

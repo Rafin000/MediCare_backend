@@ -1,7 +1,5 @@
-import { DbType, db } from "../db.server";
-import BaseRepository from "../repository/base.repository";
 import HospitalRepository from "../repository/hospital.repository";
-import { IHospital, IHospitalCreateDto } from "../types";
+import { IHospital, IHospitalCreateDto, IHospitalUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 
 export default class HospitalService {
   protected readonly hospitalRepository: HospitalRepository;
@@ -27,6 +25,17 @@ export default class HospitalService {
     }
   }
 
+
+  public async getHospitals({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<IHospital>> {
+    const response = await this.hospitalRepository.getHospitals({ ...params });
+    return response;
+  }
+
+
   public async createHospital(data: IHospitalCreateDto): Promise<IHospital> {
     try {
       const newHospital = await this.hospitalRepository.createHospital(data);
@@ -45,7 +54,7 @@ export default class HospitalService {
     }
   }
 
-  public async updateHospital(hospitalId: string, payload: Partial<IHospital>): Promise<IHospital> {
+  public async updateHospital(hospitalId: string, payload: IHospitalUpdateDto): Promise<IHospital> {
     try {
       const updatedHospital = await this.hospitalRepository.updateHospital(hospitalId, payload)
       return updatedHospital;

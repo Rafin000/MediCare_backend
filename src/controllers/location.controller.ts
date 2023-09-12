@@ -1,4 +1,4 @@
-import { ILocation, Request } from "../types";
+import { ILocation, ILocationCreateDto, ILocationUpdateDto, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import LocationService from "../services/location.service";
@@ -25,7 +25,7 @@ export default class LocationController {
 
   static createLocation = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as ILocation;
+      const payload = req.body as ILocationCreateDto;
       const locationService = new LocationService();
       const newLocation: ILocation = await locationService.createLocation(payload);
       apiResponse.sendSuccess({ res: res, data: newLocation });
@@ -44,7 +44,7 @@ export default class LocationController {
   static updateLocation = catchAsync(
     async (req: Request, res: Response) => {
       const locationId = req.params.locationId;
-      const payload = req.body as Partial<ILocation>;
+      const payload = req.body as ILocationUpdateDto;
       const locationService = new LocationService();
       const updatedLocation: ILocation = await locationService.updateLocation(locationId, payload);
       apiResponse.sendSuccess({ res, data: updatedLocation });

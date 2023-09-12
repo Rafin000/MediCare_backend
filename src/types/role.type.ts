@@ -9,3 +9,5 @@ export type IRoleCreateDto = {
   name: string,
   description: string | null
 }
+
+export type IRoleUpdateDto = Partial<IRoleCreateDto>

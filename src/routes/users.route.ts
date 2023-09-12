@@ -8,6 +8,9 @@ const userRouter = Router();
 // -> baseUrl/users
 userRouter.get('/users/all', UserController.getAllUsers)
 
+//get users with pagination
+userRouter.get('/users',UserController.getUsers)
+
 // get a single user info
 // -> baseUrl/users/:userId
 userRouter.get('/users/:userId', UserController.getUser)
@@ -23,10 +26,6 @@ userRouter.put('/users/:userId', UserController.updateUser);
 // delete a user
 // -> baseUrl/users/:userId
 userRouter.delete('/users/:userId', UserController.deleteUser);
-
-// // add a role
-// //-> baseUrl/users/:userId
-// userRouter.post('/users/:userId',userController.addOrRemoveUserRoles)
 
 //add or remove role
 userRouter.post('/user/roles/:userId', UserController.addOrRemoveUserRoles);

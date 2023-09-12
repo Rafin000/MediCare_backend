@@ -8,3 +8,5 @@ export type IDepartmentCreateDto = {
   name: string,
   description: string | null
 }
+
+export type IDepartmentUpdateDto = Partial<IDepartmentCreateDto>

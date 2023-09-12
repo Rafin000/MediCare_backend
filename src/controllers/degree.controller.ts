@@ -1,4 +1,4 @@
-import { IDegree, Request } from "../types";
+import { IDegree, IDegreeCreateDto, IDegreeUpdateDto, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import DegreeService from "../services/degree.service";
@@ -25,7 +25,7 @@ export default class DegreeController {
 
   static createDegree = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as IDegree;
+      const payload = req.body as IDegreeCreateDto;
       const degreeService = new DegreeService();
       const newDegree: IDegree = await degreeService.createDegree(payload);
       apiResponse.sendSuccess({ res: res, data: newDegree });
@@ -44,7 +44,7 @@ export default class DegreeController {
   static updateDegree = catchAsync(
     async (req: Request, res: Response) => {
       const degreeId = req.params.degreeId;
-      const payload = req.body as Partial<IDegree>;
+      const payload = req.body as IDegreeUpdateDto;
       const degreeService = new DegreeService();
       const updatedDegree: IDegree = await degreeService.updateDegree(degreeId, payload);
       apiResponse.sendSuccess({ res, data: updatedDegree });

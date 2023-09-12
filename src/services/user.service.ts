@@ -1,16 +1,15 @@
-import { DbType, db } from "../db.server";
 import { itemDeletedAndAdded } from "../helpers/utility";
-import { IUser, IUserCreateDto } from "../types/user.type";
+import { IUser, IUserCreateDto, IUserUpdateDto } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
-import BaseRepository from "../repository/base.repository";
-import { User } from "@prisma/client";
-import userCollection from "../transformer/user.transformer/user.collection";
 import userResource from "../transformer/user.transformer/user.resource";
 import UserRepository from "../repository/user.repository";
+import { PaginateResponse, PaginationQueryParams } from "../types";
 
 export default class UserService {
+
   protected readonly userRoleRepository: UserRoleRepository
   protected readonly userRepository: UserRepository
+
   constructor() {
     this.userRepository = new UserRepository()
     this.userRoleRepository = new UserRoleRepository()
@@ -26,8 +25,7 @@ export default class UserService {
     }
   }
 
-
-  public async updateUser(id: string, payload: Partial<IUser>,): Promise<IUser> {
+  public async updateUser(id: string, payload: IUserUpdateDto): Promise<IUser> {
     try {
 
       const user = await this.userRepository.updateUser(id, payload)
@@ -45,6 +43,15 @@ export default class UserService {
     } catch (error) {
       throw error;
     }
+  }
+
+  public async getUsers({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<IUser>> {
+    const response = await this.userRepository.getUsers({ ...params });
+    return response;
   }
 
 

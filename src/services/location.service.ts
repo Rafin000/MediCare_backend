@@ -1,4 +1,4 @@
-import { ILocation, ILocationCreateDto } from "../types";
+import { ILocation, ILocationCreateDto, ILocationUpdateDto } from "../types";
 import LocationRepository from "../repository/location.repository";
 
 export default class LocationService {
@@ -44,7 +44,7 @@ export default class LocationService {
     }
   }
 
-  public async updateLocation(locationId: string, payload: Partial<ILocation>): Promise<ILocation> {
+  public async updateLocation(locationId: string, payload: ILocationUpdateDto): Promise<ILocation> {
     try {
       const updatedLocation = await this.locationRepository.updateLocation(locationId, payload)
       return updatedLocation;

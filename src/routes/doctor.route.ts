@@ -6,6 +6,9 @@ const doctorRouter = Router();
 // Get all doctors
 doctorRouter.get("/doctors/all", DoctorController.getAllDoctors);
 
+//Get doctors with pagination
+doctorRouter.get('/doctors', DoctorController.getDoctors)
+
 // Get a doctor
 doctorRouter.get("/doctors/:doctorId", DoctorController.getDoctor);
 

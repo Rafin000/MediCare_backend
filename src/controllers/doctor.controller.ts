@@ -1,4 +1,4 @@
-import { IDoctor, IDoctorCreateDto, Request } from "../types";
+import { IDoctor, IDoctorCreateDto, IDoctorCreateWithUserInfoDto, IDoctorUpdateDto, PaginateResponse, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import DoctorService from "../services/doctor.service";
@@ -13,6 +13,22 @@ export default class DoctorController {
       apiResponse.sendSuccess({ res: res, data: doctors });
     }
   );
+
+  static getDoctors = catchAsync(
+    async (req: Request, res: Response) => {
+      const doctorService = new DoctorService();
+      const { page, limit, filters, includes } = req.query;
+      const response: PaginateResponse<IDoctor> = await doctorService.getDoctors({
+        params: {
+          page: Number(page ?? 1),
+          limit: Number(limit ?? 20),
+          filters: filters as Record<string, any>,
+          includes: includes as string
+        },
+      });
+      apiResponse.sendSuccess({ res: res, data: response.data, meta: response.meta })
+    }
+  )
 
   static getDoctor = catchAsync(
     async (req: Request, res: Response) => {
@@ -34,7 +50,7 @@ export default class DoctorController {
 
   static createDoctor = catchAsync(
     async (req: Request, res: Response) => {
-      const payload = req.body as IDoctorCreateDto;
+      const payload = req.body as IDoctorCreateWithUserInfoDto;
       const doctorService = new DoctorService();
       const newDoctor: IDoctor = await doctorService.createDoctor(payload);
       apiResponse.sendSuccess({ res: res, data: newDoctor });
@@ -52,7 +68,7 @@ export default class DoctorController {
   static updateDoctor = catchAsync(
     async (req: Request, res: Response) => {
       const doctorId = req.params.doctorId;
-      const payload = req.body as Partial<IDoctor>;
+      const payload = req.body as IDoctorUpdateDto;
       const doctorService = new DoctorService();
       const updatedDoctor: IDoctor = await doctorService.updateDoctor(doctorId, payload);
       apiResponse.sendSuccess({ res, data: updatedDoctor });

@@ -8,3 +8,5 @@ export type ITreatmentCreateDto = {
   type: string,
   description: string | null
 }
+
+export type ITreatmentUpdateDto = Partial<ITreatmentCreateDto>
