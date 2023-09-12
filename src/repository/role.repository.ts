@@ -4,6 +4,8 @@ import BaseRepository from "../repository/base.repository";
 import roleResource from "../transformer/hospital.transformer/hospital.resource";
 import { IRole, IRoleCreateDto, IRoleUpdateDto } from "../types/role.type";
 import roleCollection from "../transformer/role.transformer/role.collection";
+import { PaginateResponse, PaginationQueryParams } from "../types";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
 
 export default class RoleRepository extends BaseRepository<DbType> {
 
@@ -33,6 +35,33 @@ export default class RoleRepository extends BaseRepository<DbType> {
       throw error;
     }
   }
+
+
+  public async getRoles({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<IRole>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: roleCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
 
   public async getRole(id: string): Promise<IRole> {
     try {

@@ -1,4 +1,4 @@
-import { IAward, IAwardCreateDto, IAwardUpdateDto, Request } from "../types";
+import { IAward, IAwardCreateDto, IAwardUpdateDto, PaginateResponse, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import AwardService from "../services/award.service";
@@ -13,6 +13,24 @@ export default class AwardController {
       apiResponse.sendSuccess({ res: res, data: awards });
     }
   );
+
+
+  static getAwards = catchAsync(
+    async (req: Request, res: Response) => {
+      const awardService = new AwardService();
+      const { page, limit, filters, includes } = req.query;
+      const response: PaginateResponse<IAward> = await awardService.getAwards({
+        params: {
+          page: Number(page ?? 1),
+          limit: Number(limit ?? 20),
+          filters: filters as Record<string, any>,
+          includes: includes as string
+        },
+      });
+      apiResponse.sendSuccess({ res: res, data: response.data, meta: response.meta })
+    }
+  )
+
 
   static getAward = catchAsync(
     async (req: Request, res: Response) => {

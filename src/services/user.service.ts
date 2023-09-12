@@ -1,5 +1,5 @@
 import { itemDeletedAndAdded } from "../helpers/utility";
-import { IUser, IUserCreateDto, IUserUpdateDto } from "../types/user.type";
+import { IUser, IUserCreateDto, IUserUpdateDto, PrismaUserModel } from "../types/user.type";
 import UserRoleRepository from "../repository/user-role.repository";
 import userResource from "../transformer/user.transformer/user.resource";
 import UserRepository from "../repository/user.repository";
@@ -66,16 +66,16 @@ export default class UserService {
 
   public async findUserBySpecificKey(specificKey: string, userId: string): Promise<IUser> | null {
     try {
-      const user = await this.userRepository.findUniqueBySpecificKey(specificKey, userId)
+      const user: PrismaUserModel = await this.userRepository.findUniqueBySpecificKey(specificKey, userId)
       return userResource.transform(user)
     } catch (err) {
       throw err;
     }
   }
 
-  public async findUserById(userId: string): Promise<IUser> | null {
+  public async findUserById(userId: string): Promise<IUser> {
     try {
-      const user = await this.userRepository.findUniqueByKey('id', userId)
+      const user: PrismaUserModel = await this.userRepository.findUniqueByKey('id', userId)
       return userResource.transform(user)
     } catch (err) {
       throw err;

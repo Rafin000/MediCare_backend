@@ -6,6 +6,9 @@ const departmentRouter = Router();
 // Get all departments
 departmentRouter.get("/departments/all", DepartmentController.getAllDepartments);
 
+//get departments with pagination
+departmentRouter.get('/departments', DepartmentController.getDepartments)
+
 // Get a department
 departmentRouter.get("/departments/:departmentId", DepartmentController.getDepartment);
 

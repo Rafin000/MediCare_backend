@@ -3,7 +3,8 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import locationCollection from "../transformer/location.transformer/location.collection";
 import locationResource from "../transformer/location.transformer/location.resource";
-import { ILocation, ILocationCreateDto, ILocationUpdateDto } from "../types";
+import { ILocation, ILocationCreateDto, ILocationUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
 
 export default class LocationRepository extends BaseRepository<DbType> {
   constructor() {
@@ -18,6 +19,33 @@ export default class LocationRepository extends BaseRepository<DbType> {
       throw error;
     }
   }
+
+
+  public async getLocations({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<ILocation>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: locationCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
 
   public async getLocation(locationId: string): Promise<ILocation> {
     try {

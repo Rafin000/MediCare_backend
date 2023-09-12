@@ -6,6 +6,9 @@ const awardRouter = Router();
 // Get all awards
 awardRouter.get("/awards/all", AwardController.getAllAwards);
 
+//get awards with pagination
+awardRouter.get('/awards', AwardController.getAwards)
+
 // Get an award
 awardRouter.get("/awards/:awardId", AwardController.getAward);
 

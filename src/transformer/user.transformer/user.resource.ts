@@ -1,12 +1,13 @@
-import { IUser } from "../../types";
+import { IUser, PrismaUserModel } from "../../types";
 import { Transformer } from "../transformer";
 
 
 class UserResource implements Transformer {
 
-  transform(user: any): IUser {
+  
+  transform(user: PrismaUserModel): IUser {
     return {
-      id: user.user_Id,
+      id: user.id,
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
@@ -15,7 +16,7 @@ class UserResource implements Transformer {
       dob: user.dob,
       phone_number: user.phone_number,
       user_type: user.user_type,
-      roles: user?.user_roles?.map(userRole => userRole?.role)?.map(role => ({ id: role.roleId, name: role.roleName }))
+      roles: !! user?.roles ? user.roles?.map(user_role => user_role.role).map(role=>({id: role.id, name:role.name,description:role.description})): null
     }
   }
 }

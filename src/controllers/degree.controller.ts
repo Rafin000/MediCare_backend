@@ -1,4 +1,4 @@
-import { IDegree, IDegreeCreateDto, IDegreeUpdateDto, Request } from "../types";
+import { IDegree, IDegreeCreateDto, IDegreeUpdateDto, PaginateResponse, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import DegreeService from "../services/degree.service";
@@ -13,6 +13,24 @@ export default class DegreeController {
       apiResponse.sendSuccess({ res: res, data: degrees });
     }
   );
+
+
+  static getDegrees = catchAsync(
+    async (req: Request, res: Response) => {
+      const degreeService = new DegreeService();
+      const { page, limit, filters, includes } = req.query;
+      const response: PaginateResponse<IDegree> = await degreeService.getDegrees({
+        params: {
+          page: Number(page ?? 1),
+          limit: Number(limit ?? 20),
+          filters: filters as Record<string, any>,
+          includes: includes as string
+        },
+      });
+      apiResponse.sendSuccess({ res: res, data: response.data, meta: response.meta })
+    }
+  )
+  
 
   static getDegree = catchAsync(
     async (req: Request, res: Response) => {

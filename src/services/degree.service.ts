@@ -1,4 +1,4 @@
-import { IDegree, IDegreeCreateDto, IDegreeUpdateDto } from "../types";
+import { IDegree, IDegreeCreateDto, IDegreeUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import DegreeRepository from "../repository/degree.repository";
 
 export default class DegreeService {
@@ -15,6 +15,16 @@ export default class DegreeService {
       throw error;
     }
   }
+
+  public async getDegrees({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<IDegree>> {
+    const response = await this.degreeRepository.getDegrees({ ...params });
+    return response;
+  }
+
 
   public async getDegree(degreeId: string): Promise<IDegree> {
     try {

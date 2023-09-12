@@ -1,7 +1,12 @@
+import { Department } from "@prisma/client"
+import { PrismaHospitalDepartmentModel } from "./hospital-department.type"
+import { IHospital } from "./hospital.type"
+
 export type IDepartment = {
   id: string,
   name: string,
-  description: string | null
+  description: string | null,
+  hospitals?: IHospital[],
 }
 
 export type IDepartmentCreateDto = {
@@ -10,3 +15,7 @@ export type IDepartmentCreateDto = {
 }
 
 export type IDepartmentUpdateDto = Partial<IDepartmentCreateDto>
+
+export type PrismaDepartmentModel = Department & {
+  hospitals?: PrismaHospitalDepartmentModel[]
+}

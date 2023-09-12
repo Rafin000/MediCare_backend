@@ -3,7 +3,8 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import specializationCollection from "../transformer/specialization.transformer/specialization.collection";
 import specializationResource from "../transformer/specialization.transformer/specialization.resource";
-import { ISpecialization, ISpecializationCreateDto, ISpecializationUpdateDto } from "../types";
+import { ISpecialization, ISpecializationCreateDto, ISpecializationUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
 
 export default class SpecializationRepository extends BaseRepository<DbType> {
   constructor() {
@@ -18,6 +19,33 @@ export default class SpecializationRepository extends BaseRepository<DbType> {
       throw error;
     }
   }
+
+
+  public async getSpecializations({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<ISpecialization>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: specializationCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
 
   public async getSpecialization(specializationId: string): Promise<ISpecialization> {
     try {

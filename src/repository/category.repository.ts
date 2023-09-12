@@ -3,7 +3,8 @@ import { DbType, db } from "../db.server";
 import BaseRepository from "../repository/base.repository";
 import categoryCollection from "../transformer/category.transformer/category.collection";
 import categoryResource from "../transformer/category.transformer/category.resource";
-import { ICategory, ICategoryCreateDto, ICategoryUpdateDto } from "../types";
+import { ICategory, ICategoryCreateDto, ICategoryUpdateDto, PaginateResponse, PaginationQueryParams } from "../types";
+import { buildIncludesObject, buildWhereObject } from "../utils/utils";
 
 export default class CategoryRepository extends BaseRepository<DbType> {
   constructor() {
@@ -19,6 +20,33 @@ export default class CategoryRepository extends BaseRepository<DbType> {
     }
   }
 
+
+  public async getCategories({
+    page,
+    limit,
+    filters,
+    includes = '',
+  }: PaginationQueryParams): Promise<PaginateResponse<ICategory>> {
+    try {
+      const includeArray = includes.split(',');
+
+      const response = await this.paginate({
+        page,
+        pageSize: limit,
+        transformCollection: categoryCollection.transformCollection,
+        options: {
+          includes: buildIncludesObject(includeArray ?? []),
+          where: buildWhereObject(filters),
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  
   public async getCategory(categoryId: string): Promise<ICategory> {
     try {
       const category = await this.get<ICategory, Category>(categoryId, categoryResource.transform);

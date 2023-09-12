@@ -1,4 +1,4 @@
-import { IDegreeUpdateDto, IDepartment, IDepartmentCreateDto, Request } from "../types";
+import { IDegreeUpdateDto, IDepartment, IDepartmentCreateDto, PaginateResponse, Request } from "../types";
 import { Response } from "express";
 import catchAsync from "../utils/catchAsync";
 import DepartmentService from "../services/department.service";
@@ -13,6 +13,24 @@ export default class DepartmentController {
       apiResponse.sendSuccess({ res: res, data: departments });
     }
   );
+
+
+  static getDepartments = catchAsync(
+    async (req: Request, res: Response) => {
+      const departmentService = new DepartmentService();
+      const { page, limit, filters, includes } = req.query;
+      const response: PaginateResponse<IDepartment> = await departmentService.getDepartments({
+        params: {
+          page: Number(page ?? 1),
+          limit: Number(limit ?? 20),
+          filters: filters as Record<string, any>,
+          includes: includes as string
+        },
+      });
+      apiResponse.sendSuccess({ res: res, data: response.data, meta: response.meta })
+    }
+  )
+
 
   static getDepartment = catchAsync(
     async (req: Request, res: Response) => {

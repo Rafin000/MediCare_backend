@@ -6,6 +6,9 @@ const degreeRouter = Router();
 // Get all degrees
 degreeRouter.get("/degrees/all", DegreeController.getAllDegrees);
 
+//get degrees with pagination
+degreeRouter.get('/degrees', DegreeController.getDegrees);
+
 // Get a degree
 degreeRouter.get("/degrees/:degreeId", DegreeController.getDegree);
 

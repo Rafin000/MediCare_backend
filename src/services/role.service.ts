@@ -1,5 +1,6 @@
 import { IRole, IRoleCreateDto, IRoleUpdateDto } from "../types/role.type";
 import RoleRepository from "../repository/role.repository";
+import { PaginateResponse, PaginationQueryParams } from "../types";
 
 export default class RoleService {
   protected readonly roleRepository: RoleRepository;
@@ -33,6 +34,18 @@ export default class RoleService {
       throw error;
     }
   }
+
+
+  public async getRoles({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<IRole>> {
+    const response = await this.roleRepository.getRoles({ ...params });
+    return response;
+  }
+
+
 
   public async updateRole(RoleId: string, payload: IRoleUpdateDto): Promise<IRole> {
     try {

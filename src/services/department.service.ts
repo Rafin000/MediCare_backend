@@ -1,4 +1,4 @@
-import { IDegreeUpdateDto, IDepartment, IDepartmentCreateDto } from "../types";
+import { IDegreeUpdateDto, IDepartment, IDepartmentCreateDto, PaginateResponse, PaginationQueryParams } from "../types";
 import DepartmentRepository from "../repository/department.repository";
 
 export default class DepartmentService {
@@ -16,6 +16,17 @@ export default class DepartmentService {
       throw error;
     }
   }
+
+
+  public async getDepartments({
+    params,
+  }: {
+    params: PaginationQueryParams;
+  }): Promise<PaginateResponse<IDepartment>> {
+    const response = await this.departmentRepository.getDepartments({ ...params });
+    return response;
+  }
+
 
   public async getDepartment(departmentId: string): Promise<IDepartment> {
     try {

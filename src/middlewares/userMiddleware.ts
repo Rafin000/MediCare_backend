@@ -10,10 +10,7 @@ export default class UserMiddleware {
     async (req: Request, res: Response, next: NextFunction) => {
       const { userId } = req.params;
       const userService = new UserService();
-      const user = await userService.findUserById(userId)
-      if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, "User is not found!");
-      }
+      await userService.findUserById(userId)
 
       next()
     }

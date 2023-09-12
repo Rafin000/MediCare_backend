@@ -1,6 +1,7 @@
 export const treatmentQueryParams = {
   allowedIncludes: [
-    'hospitals'
+    'hospitals',
+    'hospitals.hospital'
   ],
   allowedFilters: [
     'name'
