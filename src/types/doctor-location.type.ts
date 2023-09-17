@@ -1,4 +1,4 @@
-import { Doctor, Doctor_Location } from "@prisma/client"
+import { Doctor, Location, Doctor_Location } from "@prisma/client"
 
 export type IDoctorLocation = {
   doctor_id: string,
